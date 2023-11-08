@@ -34,7 +34,7 @@ export default class AuthController {
             console.log(error);
         }
     }
-    
+
     // logging user out of the passport session
     logout = async (req, res) => {
         try {
@@ -67,7 +67,8 @@ export default class AuthController {
             await user.save();
 
             // Send a password reset email with the token link
-            const resetLink = `http://localhost:8080/user/reset-password/${token}`;
+            const resetLink = `https://nodejs-authentication-bksz.onrender.com/user/reset-password/${token}`;
+
             sendMail(email, resetLink);
 
             return res.render('forgot-pass', { successMsg: 'Password reset link has been successfully sent to your email address' });
