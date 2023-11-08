@@ -5,7 +5,7 @@ const verifyGoogle = (passport) => {
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID || '571467288820-o5tuof6beqm104lhenpram3k5e34aq76.apps.googleusercontent.com',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || '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',
-        callbackURL: "http://localhost:8080/auth/google/callback",
+        callbackURL: "https://nodejs-authentication-bksz.onrender.com/auth/google/callback",
         passReqToCallback: true
     },
         async (req, accessToken, refreshToken, profile, cb) => {
