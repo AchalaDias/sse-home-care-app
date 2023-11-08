@@ -1,0 +1,71 @@
+<head>
+    <style>
+        .vertical-bar {
+            border-left: 2px solid #9e8d8d;
+            height: 500px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+    <div class="container mt-5">
+        <div class="row align-items-center">
+            <!-- Left Column: Login Form -->
+            <div class="col-md-6 p-4 border rounded">
+                <h2 class="text-center">Login</h2>
+                <% if(messages.error){ %>
+                    <div class="alert alert-danger" role="alert">
+                        <%= messages.error %>
+                    </div>
+                    <% } %>
+                        <form class="px-5 pb-3 d-flex flex-column gap-2" action="/auth/login" method="post">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter your email">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Enter your password">
+                            </div>
+                            <div class="g-recaptcha" data-sitekey="6Ld5k_goAAAAACvtfYK5D_ZmRlZWwugVPJILQMoR">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block mt-2">Sign In</button>
+                        </form>
+                        <div class="text-center">
+                            Dont have an account?
+                            <a href="/auth/register" class="text-primary">SignUp</a>
+                        </div>
+                        <div class="text-center">
+                            <a href="/auth/forgot-password" class="text-primary">Forgot your password?</a>
+                        </div>
+            </div>
+
+            <!-- Vertical Bar -->
+            <div class="col-md-1">
+                <div class="vertical-bar"></div>
+            </div>
+
+            <!-- Right Column: Additional Content -->
+            <div class="col-md-5 p-4">
+                <div class="text-center">
+                    <h3>Access Your Account</h3>
+                    <p>Sign in easily using your Google account:</p>
+                    <!-- Google Sign-In Button -->
+                    <a href="/auth/google" class="container mt-1">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-danger">
+                                    <i class="fa fab fa-google mr-2"></i> Sign in with Google
+                                </button>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
