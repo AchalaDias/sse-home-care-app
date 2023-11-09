@@ -47,6 +47,6 @@ app.use('/user', UserRouter);
 
 // listen to express server
 app.listen(8080, () => {
-    console.log('Server is running on http://localhost:8080');
     connectTodb();
+    console.log('Server is running on http://localhost:3000');
 })
