@@ -18,6 +18,12 @@ export default class JobController {
             // Extract form data
             const { jobTitle, location, latitude, longitude, jobDescription, tags, cost, jobDate } = req.body;
 
+            req.files.forEach((file) => {
+                if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpeg') {
+                    return res.render('home', { user: req.user, errMsg: "Invalid image format" });
+                }
+            });
+
             // Store image URLs
             const imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
 
@@ -52,7 +58,9 @@ export default class JobController {
     viewFindJob = async (req, res) => {
         try {
             const query = req.query.q || ''; // Get search query from the URL parameter
+            const userId = req.user._id;
             const jobs = await Job.find({
+                userId: { $ne: userId },
                 $or: [
                     { title: { $regex: query, $options: 'i' } },
                     { tags: { $regex: query, $options: 'i' } },
@@ -88,18 +96,47 @@ export default class JobController {
     deleteJob = async (req, res) => {
         try {
             const job = await Job.findById(req.params.id);
-    
+
             // Check if job exists and user is the creator
             if (!job) {
                 return res.status(404).json({ message: 'Job not found' });
             }
-    
+
             if (job.userId !== req.user._id.toString()) {
                 return res.status(403).json({ message: 'You are not authorized to delete this job' });
             }
-    
+
             await job.deleteOne();
-            res.redirect('/job/find-job');
+            res.redirect('/job/my-jobs');
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    }
+
+    myJobs = async (req, res) => {
+        try {
+            const query = req.query.q || null;
+            let jobs = []
+            if (query) {
+                const userId = req.user._id;
+                jobs = await Job.find({
+                    $and: [
+                        { userId: userId }, // Check for jobs created by the logged-in user
+                        {
+                            $or: [
+                                { title: { $regex: query, $options: 'i' } }, // Search in title
+                                { tags: { $regex: query, $options: 'i' } }  // Search in tags
+                            ],
+                        }
+                    ],
+                }).sort({ createdAt: -1 });
+            } else {
+                const userId = req.user._id;
+                jobs = await Job.find({ userId: userId }).sort({ createdAt: -1 });
+            }
+
+            return res.render('my-jobs', { user: req.user, jobs, query });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Server error' });

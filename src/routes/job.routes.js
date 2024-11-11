@@ -29,6 +29,7 @@ UserRouter.get('/find-job', checkAuthenticated, jobController.viewFindJob);
 UserRouter.get('/search-jobs', checkAuthenticated, jobController.searchJob);
 
 UserRouter.get('/delete-job/:id', checkAuthenticated, jobController.deleteJob);
+UserRouter.get('/my-jobs', checkAuthenticated, jobController.myJobs);
 
 
 export default UserRouter;

@@ -3,7 +3,7 @@
 <div class="container mt-4">
     <div class="job-form bg-white p-4 rounded shadow-sm" style="max-width: 800px; margin: 0 auto;">
         <h2 class="mb-4 text-center">Post a New Job</h2>
-        <form action="/user/create-job" method="post" enctype="multipart/form-data">
+        <form action="/job/create-job" method="post" enctype="multipart/form-data">
             <!-- Job Title -->
             <div class="form-group mb-3">
                 <label for="jobTitle" class="form-label">Job Title</label>
@@ -27,7 +27,7 @@
             <!-- Images (Optional) with Multiple Upload and Preview -->
             <div class="form-group mb-3">
                 <label for="images" class="form-label">Images (Optional)</label>
-                <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+                <input type="file" class="form-control" id="images" name="images" accept=".png, .jpeg, .jpg" multiple>
                 <small class="text-muted">You can upload multiple images for this job.</small>
                 <div id="imagePreview" class="d-flex mt-3 gap-2"></div>
             </div>
