@@ -35,6 +35,7 @@ app.use(passport.session());
 // Configure ejs view engine & its path
 app.set('view engine', 'ejs');
 app.set('views', path.join(path.resolve(), 'src', 'views'));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use(expressEjsLayouts);
 
@@ -48,5 +49,5 @@ app.use('/user', UserRouter);
 // listen to express server
 app.listen(8080, () => {
     connectTodb();
-    console.log('Server is running on http://localhost:3000');
+    console.log('Server is running on http://localhost:8080');
 })

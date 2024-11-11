@@ -14,9 +14,9 @@ const AuthRouter = express.Router();
 verifyGoogle(passport);
 
 // Auth Routes
-AuthRouter.get('/register', checkNotAuthenticated, (req, res) => { res.render('register'); })
+AuthRouter.get('/register', checkNotAuthenticated, (req, res) => { return res.render('register', { user: null }); })
 AuthRouter.post('/register', checkNotAuthenticated, verifyCaptcha, authController.register);
-AuthRouter.get('/login', checkNotAuthenticated, (req, res) => { res.render('login'); })
+AuthRouter.get('/login', checkNotAuthenticated, (req, res) => { return res.render('login', { user: null }); })
 AuthRouter.post('/login', checkNotAuthenticated, verifyCaptcha, passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/auth/login',

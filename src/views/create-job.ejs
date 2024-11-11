@@ -1,0 +1,105 @@
+<!-- <div class="header">Create Job</div> -->
+
+<div class="container mt-4">
+    <div class="job-form bg-white p-4 rounded shadow-sm" style="max-width: 800px; margin: 0 auto;">
+        <h2 class="mb-4 text-center">Post a New Job</h2>
+        <form action="/user/create-job" method="post" enctype="multipart/form-data">
+            <!-- Job Title -->
+            <div class="form-group mb-3">
+                <label for="jobTitle" class="form-label">Job Title</label>
+                <input type="text" class="form-control" id="jobTitle" name="jobTitle" placeholder="Enter job title" required>
+            </div>
+
+            <!-- Google Location with Autocomplete -->
+            <div class="form-group mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" required>
+                <input type="hidden" id="latitude" name="latitude">
+                <input type="hidden" id="longitude" name="longitude">
+            </div>
+
+            <!-- Job Description -->
+            <div class="form-group mb-3">
+                <label for="jobDescription" class="form-label">Job Description</label>
+                <textarea class="form-control" id="jobDescription" name="jobDescription" rows="4" placeholder="Describe the job in detail" required></textarea>
+            </div>
+
+            <!-- Images (Optional) with Multiple Upload and Preview -->
+            <div class="form-group mb-3">
+                <label for="images" class="form-label">Images (Optional)</label>
+                <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+                <small class="text-muted">You can upload multiple images for this job.</small>
+                <div id="imagePreview" class="d-flex mt-3 gap-2"></div>
+            </div>
+
+            <!-- Tags -->
+            <div class="form-group mb-3">
+                <label for="tags" class="form-label">Tags</label>
+                <input type="text" class="form-control" id="tags" name="tags" placeholder="Add relevant tags, separated by commas" required>
+                <small class="text-muted">E.g., "construction, carpentry, painting"</small>
+            </div>
+
+            <!-- Cost -->
+            <div class="form-group mb-3">
+                <label for="cost" class="form-label">Cost $A</label>
+                <input type="number" class="form-control" id="cost" name="cost" placeholder="Enter estimated cost" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100 mt-4">Submit Job</button>
+        </form>
+    </div>
+</div>
+
+<!-- Include Google Maps JavaScript API with Places library -->
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=places"></script>
+
+<script>
+    // Initialize Google Places Autocomplete
+    function initializeAutocomplete() {
+        const input = document.getElementById('location');
+        const autocomplete = new google.maps.places.Autocomplete(input);
+
+        autocomplete.setFields(['address_components', 'geometry', 'name']);
+        autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
+            console.log('Selected place:', place);
+            if (place.geometry) {
+                // Get the coordinates and place name
+                const latitude = place.geometry.location.lat();
+                const longitude = place.geometry.location.lng();
+
+                // Populate the hidden fields with coordinates and place name
+                document.getElementById('latitude').value = latitude;
+                document.getElementById('longitude').value = longitude;
+                console.log('Latitude:', latitude, 'Longitude:', longitude);
+            } else {
+                alert("Please select a valid location from the suggestions.");
+            }
+        });
+    }
+
+    window.onload = initializeAutocomplete;
+
+    // Image Preview for Multiple Uploads
+    document.getElementById('images').addEventListener('change', function() {
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = ''; // Clear any existing previews
+
+        Array.from(this.files).forEach(file => {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.style.width = '100px';
+                    imgElement.style.height = '100px';
+                    imgElement.style.objectFit = 'cover';
+                    imgElement.classList.add('rounded'); // Optional styling
+                    imagePreview.appendChild(imgElement);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>

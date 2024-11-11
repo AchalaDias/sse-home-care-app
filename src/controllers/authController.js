@@ -67,7 +67,7 @@ export default class AuthController {
             await user.save();
 
             // Send a password reset email with the token link
-            const resetLink = `https://nodejs-authentication-bksz.onrender.com/user/reset-password/${token}`;
+            const resetLink = `http://localhost:8080/user/reset-password/${token}`;
 
             sendMail(email, resetLink);
 

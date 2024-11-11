@@ -7,14 +7,14 @@ const sendMail = async (email, resetLink) => {
         secure: true,
         service: 'gmail',
         auth: {
-            user: 'vinayakt890@gmail.com',
-            pass: 'dgznasjdxcnvnptq',
+            user: process.env.DEMO_EMAIL,
+            pass: process.env.EMAIL_PASSWORD,
 
         },
     });
 
     const mailOptions = {
-        from: 'vinayakt890@gmail.com',
+        from: 'ssedemo14@gmail.com',
         to: email,
         subject: 'Password Reset Request',
         html: `Click this <a href="${resetLink}">link</a> to reset your password.`,

@@ -4,7 +4,7 @@ import request from 'request';
 function verifyRecaptcha(recaptchaResponse, callback) {
     const verificationURL = 'https://www.google.com/recaptcha/api/siteverify';
     const formData = {
-        secret: process.env.CAPTCHA_SECRET,
+        secret: process.env.CAPTCHA_SECRET || "6Leup3oqAAAAABPvx8CSwE0caYG8-jaPcvPFg9sy",
         response: recaptchaResponse,
     };
 

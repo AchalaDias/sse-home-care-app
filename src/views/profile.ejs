@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f7fa;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+            width: 220px;
+            height: 100vh;
+        }
+        .sidebar h5 {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #adb5bd;
+        }
+        .sidebar .nav-link {
+            color: #adb5bd;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+            color: #ffffff;
+        }
+        .main-content {
+            flex: 1;
+            padding: 40px;
+        }
+        .header {
+            background-color: #495057;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .profile-info {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .profile-info h2 {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .profile-info .form-group label {
+            font-weight: 500;
+        }
+        .profile-info .btn-primary {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <div class="header">
+        User Profile
+    </div>
+
+    <!-- Profile Info -->
+    <div class="profile-info">
+        <!-- Thumbnail with initials -->
+        <div class="thumbnail mx-auto text-center">
+            <!-- Replace 'A' with the user's initial letter(s) dynamically -->
+            A
+        </div>
+        
+        <!-- Profile Details Form -->
+        <h2>John Doe</h2>
+        <form>
+            <div class="form-group mb-3">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="John Doe" disabled>
+            </div>
+            <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="johndoe@example.com" disabled>
+            </div>
+            <div class="form-group mb-3">
+                <label for="phone">Phone</label>
+                <input type="text" class="form-control" id="phone" name="phone" value="+1234567890" disabled>
+            </div>
+            <button type="button" class="btn btn-primary mt-4">Edit Profile</button>
+        </form>
+    </div>
+</div>

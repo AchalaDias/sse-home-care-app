@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import User from "../userSchema.js";
 import bcrypt from 'bcrypt';
+import Job from '../jobSchema.js';
 
 export default class UserController {
     getResetForm = async (req, res) => {
@@ -66,5 +67,99 @@ export default class UserController {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    profile = async (req, res) => {
+        const id = req.params.id;
+        try {
+            const user = await User.findById(id);
+            console.log(user)
+            return res.render('profile', { user: req.user, errMsg: null });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    viewCreateJob = async (req, res) => {
+        const id = req.params.id;
+        try {
+            const user = await User.findById(id);
+            return res.render('create-job', { googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY, user: req.user, errMsg: null });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    createJob = async (req, res) => {
+        try {
+            // Extract form data
+            const { jobTitle, location, latitude, longitude, jobDescription, tags, cost } = req.body;
+
+            // Store image URLs
+            const imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
+
+            // Convert tags to array (split by commas)
+            const tagsArray = tags.split(',').map((tag) => tag.trim());
+
+            // Create a new job document
+            const job = new Job({
+                title: jobTitle,
+                userId: req.user._id,
+                location,
+                latitude: parseFloat(latitude),
+                longitude: parseFloat(longitude),
+                description: jobDescription,
+                images: imageUrls,
+                tags: tagsArray,
+                cost: parseFloat(cost)
+            });
+
+            // Save the job in MongoDB
+            await job.save();
+
+            return res.render('home', { user: req.user, errMsg: null });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Failed to create job' });
+        }
+    }
+
+
+    viewFindJob = async (req, res) => {
+        try {
+            const query = req.query.q || ''; // Get search query from the URL parameter
+            const jobs = await Job.find({
+                $or: [
+                    { title: { $regex: query, $options: 'i' } },
+                    { tags: { $regex: query, $options: 'i' } },
+                ],
+            });
+
+            return res.render('find-jobs', { user: req.user, jobs, query });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+    }
+
+    searchJob = async (req, res) => {
+        try {
+            const query = req.query.q || '';
+            const isNumeric = !isNaN(query);
+            const jobs = await Job.find({
+                $or: [
+                    { title: { $regex: query, $options: 'i' } },
+                    { tags: { $regex: query, $options: 'i' } },
+                    ...(isNumeric ? [{ cost: query }] : []),
+                ],
+            });
+
+            return res.render('find-jobs', { user: req.user, jobs, query });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+
+
     }
 }

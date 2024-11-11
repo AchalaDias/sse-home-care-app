@@ -2,75 +2,23 @@
 <html lang="en">
 
 <head>
-    <script>
-        function validatePassword() {
-            let newPassword = document.getElementById('newPassword').value;
-            let confirmPassword = document.getElementById('confirmPassword').value;
-            let message = document.getElementById('message');
 
-            if (newPassword !== confirmPassword) {
-                message.textContent = "Passwords do not match!";
-                return false; // Prevent form submission
-            } else {
-                message.textContent = ""; // Clear any previous error message
-                return true; // Allow form submission
-            }
-        }
-    </script>
 </head>
 
-<div class="d-flex justify-content-center align-items-center flex-column" style="min-height: 100vh;">
-    <% if(errMsg){ %>
-        <div class="alert alert-danger" role="alert">
-            <%= errMsg %>
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <div class="header">
+        <%= user.username.charAt(0).toUpperCase() + user.username.slice(1) %>, Welcome to Home Care Center
+    </div>
+
+    <!-- Panels -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="panel panel-create" onclick="window.location.href='/user/create-job'">Create Job</div>
         </div>
-        <% } %>
-
-            <div class="container d-flex align-items-center justify-content-center flex-column">
-                <h2>
-                    <%= user.username.charAt(0).toUpperCase() + user.username.slice(1) %>, Welcome to home Page!
-                </h2>
-                <div class="text-center">
-                    <button type="button" class="btn btn-primary p-3 px-5 rounded-1" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        Reset Password
-                    </button>
-                    <a href="/auth/logout" class="btn btn-secondary m-2 p-3 px-5 rounded-1">Logout</a>
-                </div>
-            </div>
-
-            <!-- Button trigger modal -->
-            <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New Password</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="/user/user-reset-pass/<%= user._id %>" method="post"
-                                onsubmit="return validatePassword();">
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="newPassword" class="form-label">New Password</label>
-                                    <input type="password" class="form-control" id="newPassword" name="newPassword">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" id="confirmPassword"
-                                        name="confirmPassword">
-                                </div>
-                                <span id="message" class="bg-danger"></span>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="col-md-6">
+            <div class="panel panel-find" onclick="window.location.href='/user/find-job'">Find Jobs</div>
+        </div>
+    </div>
 </div>

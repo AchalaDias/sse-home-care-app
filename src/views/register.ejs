@@ -36,8 +36,8 @@
                             <input type="password" class="form-control" id="confirmPassword"
                                 placeholder="Confirm Password">
                         </div>
-                        <div class="g-recaptcha" data-sitekey="6Ld5k_goAAAAACvtfYK5D_ZmRlZWwugVPJILQMoR"></div>
-                        <button type="submit" class="btn btn-success">Sign Up</button>
+                        <div class="g-recaptcha" data-sitekey="6Leup3oqAAAAAG8sGazctOdu54ITQSmwRXvfMiZF"></div>
+                        <button type="submit" id="signupButton" class="btn btn-success">Sign Up</button>
                     </form>
                     <div class="text-center">
                         Already have an account?
@@ -74,7 +74,7 @@
     document.getElementById("signupButton").addEventListener("click", function (event) {
         var password = document.getElementById("newPassword").value;
         var confirmPassword = document.getElementById("confirmPassword").value;
-
+        console.log("LOLOLOLOL")
         if (password !== confirmPassword) {
             var errorDiv = document.createElement("div");
             errorDiv.className = "alert alert-danger mt-3";
