@@ -45,6 +45,12 @@
                 <input type="number" class="form-control" id="cost" name="cost" placeholder="Enter estimated cost" required>
             </div>
 
+            <!-- Job Date -->
+            <div class="form-group mb-3">
+                <label for="jobDate" class="form-label">Job Date</label>
+                <input type="date" class="form-control" id="jobDate" name="jobDate" required>
+            </div>
+
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary w-100 mt-4">Submit Job</button>
         </form>
@@ -55,6 +61,8 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=places"></script>
 
 <script>
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("jobDate").setAttribute("min", today);
     // Initialize Google Places Autocomplete
     function initializeAutocomplete() {
         const input = document.getElementById('location');

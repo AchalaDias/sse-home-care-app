@@ -5,7 +5,7 @@
     <div class="container mt-5">
         <!-- Search Bar -->
         <div class="d-flex justify-content-center mb-4">
-            <form action="/user/search-jobs" method="get" class="d-flex" style="width: 60%;">
+            <form action="/job/search-jobs" method="get" class="d-flex" style="width: 60%;">
                 <input type="text" name="q" class="form-control" placeholder="Search for jobs..." value="<%= query %>">
                 <button type="submit" class="btn btn-primary ms-2">Search</button>
             </form>
@@ -36,7 +36,24 @@
                                     <p class="card-text">
                                         <small class="text-muted">Cost($A): <%= job.cost %></small>
                                     </p>
-                                    <a href="/jobs/<%= job._id %>" class="btn btn-primary">View Details</a>
+                                    <p class="card-text">
+                                        <strong>Tags:</strong>
+                                        <% job.tags.forEach(tag => { %>
+                                            <span class="badge bg-secondary"><%= tag %></span>
+                                        <% }) %>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-muted">Job Date: <%= job.jobDate %></small>
+                                    </p>
+                                    <% if (job.userId === user._id.toString()) { %>
+                                        <form action="/job/delete-job/<%= job._id %>?_method=DELETE" method="get" style="display:inline;" >
+                                            <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Delete</button>
+                                        </form>
+                                    <% } %>
+                                    <% if (job.userId != user._id.toString()) { %>
+                                        <a href="/jobs/<%= job._id %>" class="btn btn-primary">View Details</a>
+                                    <% } %>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -45,5 +62,23 @@
             <% } %>
         </div>
     </div>
-
+    <script>
+        function confirmDelete(button) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to delete this job? This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form if user confirms
+                button.closest('form').submit();
+            }
+        });
+    }
+    </script>
 </html>
