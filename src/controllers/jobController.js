@@ -1,5 +1,6 @@
 import User from "../userSchema.js";
 import Job from '../jobSchema.js';
+import Application from '../applicationSchema.js';
 
 export default class JobController {
     viewCreateJob = async (req, res) => {
@@ -59,7 +60,9 @@ export default class JobController {
         try {
             const query = req.query.q || ''; // Get search query from the URL parameter
             const userId = req.user._id;
+            const appliedJobs = await Application.find({ userId }).distinct('jobId');
             const jobs = await Job.find({
+                _id: { $nin: appliedJobs },
                 userId: { $ne: userId },
                 $or: [
                     { title: { $regex: query, $options: 'i' } },
@@ -117,9 +120,9 @@ export default class JobController {
     myJobs = async (req, res) => {
         try {
             const query = req.query.q || null;
+            const userId = req.user._id;
             let jobs = []
             if (query) {
-                const userId = req.user._id;
                 jobs = await Job.find({
                     $and: [
                         { userId: userId }, // Check for jobs created by the logged-in user
@@ -132,14 +135,79 @@ export default class JobController {
                     ],
                 }).sort({ createdAt: -1 });
             } else {
-                const userId = req.user._id;
                 jobs = await Job.find({ userId: userId }).sort({ createdAt: -1 });
             }
 
-            return res.render('my-jobs', { user: req.user, jobs, query });
+            // Get application counts for each job
+            const jobsWithApplicationCounts = await Promise.all(jobs.map(async (job) => {
+                const applicationCount = await Application.countDocuments({ jobId: job._id });
+                return {
+                    ...job.toObject(), // Convert Mongoose document to plain object
+                    applicationCount,   // Add applicationCount property
+            };
+        }));
+        console.log(jobsWithApplicationCounts);
+        return res.render('my-jobs', { user: req.user, jobs: jobsWithApplicationCounts, query });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Server error' });
+        }
+    }
+
+    viewJob = async (req, res) => {
+        try {
+            const jobId = req.params.id;
+    
+            // Fetch job details
+            const job = await Job.findById(jobId);
+    
+            // // Fetch associated bids
+            // const bids = await Bid.find({ jobId }).populate('userId', 'name'); // Populate user name if desired
+    
+            return res.render('view-job', { user: req.user, job });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+    }
+
+    applyJob = async (req, res) => {
+        try {
+            const jobId = req.params.id;
+            const { comment } = req.body;
+            const userId = req.user._id; // Assuming `req.user` contains the logged-in user's info
+    
+            const apply = new Application({
+                jobId,
+                userId,
+                comment
+            });
+    
+            await apply.save();
+            res.redirect(`/jobs/`); // Redirect back to the job details page
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Failed to submit application');
+        }
+    }
+
+    listJobApplications = async (req, res) => {
+        try {
+            const jobId = req.params.id;
+            const { comment } = req.body;
+            const userId = req.user._id; // Assuming `req.user` contains the logged-in user's info
+    
+            const apply = new Application({
+                jobId,
+                userId,
+                comment
+            });
+    
+            await apply.save();
+            res.redirect(`/jobs/`); // Redirect back to the job details page
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Failed to submit application');
         }
     }
 }

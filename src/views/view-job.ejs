@@ -1,0 +1,26 @@
+<div class="container mt-5">
+    <h2><%= job.title %></h2>
+    <p><%= job.description %></p>
+    <p><strong>Location:</strong> <%= job.location %></p>
+    <p><strong>Cost:</strong> $<%= job.cost %></p>
+    <p><strong>Job Date:</strong> <%= new Date(job.jobDate).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+    }) %></p>
+
+    <!-- Display Job Images -->
+    <div class="job-images mb-4">
+        <% job.images.forEach(image => { %>
+            <img src="<%= image %>" alt="Job Image" class="img-thumbnail" style="max-width: 200px; margin: 5px;">
+        <% }) %>
+    </div>
+
+    <!-- Bid Form -->
+    <h4>Place a Bid</h4>
+    <form action="/application/<%= job._id %>" method="post">
+        <div class="mb-3">
+            <label for="comment" class="form-label">Comment</label>
+            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+</div>

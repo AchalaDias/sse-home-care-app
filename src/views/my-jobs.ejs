@@ -50,9 +50,9 @@
                                             <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Delete</button>
                                         </form>
                                     <% } %>
-                                    <% if (job.userId != user._id.toString()) { %>
-                                        <a href="/jobs/<%= job._id %>" class="btn btn-primary">View Details</a>
-                                    <% } %>
+                                        <a href="/jobs/<%= job._id %>" class="btn btn-primary">View Applications
+                                            <span class="badge bg-secondary badge-circle"><%= job.applicationCount %></span>
+                                        </a>
                                     
                                 </div>
                             </div>
