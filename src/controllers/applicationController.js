@@ -44,18 +44,45 @@ export default class ApplicationController {
                     $unwind: '$jobDetails'
                 },
                 {
+                    $lookup: { // Join with the Timesheet collection
+                        from: 'timesheets',
+                        localField: '_id', // Assuming timesheet has a field that references the application ID
+                        foreignField: 'applicationId', // This should be the field in Timesheet that holds the application ID
+                        as: 'timesheetDetails'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$timesheetDetails',
+                        preserveNullAndEmptyArrays: true // Keep applications without timesheets
+                    }
+                },
+                {
                     $project: { // Select specific fields to return
                         jobId: 1,
                         amount: 1,
                         comment: 1,
+                        userId: 1,
                         approved: 1,
                         createdAt: 1,
                         jobDetails: {
                             title: 1,
                             description: 1,
                             location: 1,
+                            longitude: 1,
+                            latitude: 1,
                             cost: 1,
                             images: 1,
+                            jobDate: 1,
+                            createdAt: 1
+                        },
+                        timesheetDetails: {
+                            clockInTime: 1,
+                            clockInSet: 1,
+                            clockOutTime: 1,
+                            clockOutSet: 1,
+                            userId: 1,
+                            jobId: 1,
                             createdAt: 1
                         }
                     }

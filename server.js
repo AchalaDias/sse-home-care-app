@@ -13,6 +13,7 @@ import initialize, { checkAuthenticated } from './config/passport.js';
 import UserRouter from './src/routes/user.routes.js';
 import JobRouter from './src/routes/job.routes.js';
 import AppicationRouter from './src/routes/appication.routes.js';
+import TimesheetRouter from './src/routes/timesheet.routes.js';
 import expressEjsLayouts from 'express-ejs-layouts';
 
 // Initialization
@@ -49,6 +50,7 @@ app.use('/auth', AuthRouter);
 app.use('/user', UserRouter);
 app.use('/job', JobRouter);
 app.use('/application', AppicationRouter);
+app.use('/timesheet', TimesheetRouter);
 
 // listen to express server
 app.listen(8080, () => {

@@ -2,29 +2,35 @@
 <html lang="en">
 
 
-    <div class="container mt-5">
-        <div class="header">
-            Job Applications
-        </div>
-        <!-- Job Listings -->
-        <div class="job-list">
-            <% if (jobs.length === 0) { %>
-                <p class="text-center">No jobs found.</p>
+<div class="container mt-5">
+    <div class="header">
+        Job Applications
+    </div>
+    <!-- Job Listings -->
+    <div class="job-list">
+        <% if (jobs.length===0) { %>
+            <p class="text-center">No jobs found.</p>
             <% } else { %>
-                <% jobs.forEach(job => { %>
+                <% jobs.forEach(job=> { %>
                     <div class="card mb-3">
                         <div class="row g-0">
                             <div class="col-md-4">
-                                <% if (job.jobDetails.images && job.jobDetails.images.length > 0) { %>
-                                    <img src="<%= job.jobDetails.images[0] %>" class="img-fluid rounded-start" alt="Job Image">
-                                <% } else { %>
-                                    <img src="/uploads/default-placeholder.jpg" class="img-fluid rounded-start" alt="Default Image">
-                                <% } %>
+                                <% if (job.jobDetails.images && job.jobDetails.images.length> 0) { %>
+                                    <img src="<%= job.jobDetails.images[0] %>" class="img-fluid rounded-start"
+                                        alt="Job Image">
+                                    <% } else { %>
+                                        <img src="/uploads/default-placeholder.jpg" class="img-fluid rounded-start"
+                                            alt="Default Image">
+                                        <% } %>
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <h5 class="card-title"><%= job.title %></h5>
-                                    <p class="card-text"><%= job.description %></p>
+                                    <h5 class="card-title">
+                                        <%= job.title %>
+                                    </h5>
+                                    <p class="card-text">
+                                        <%= job.description %>
+                                    </p>
                                     <p class="card-text">
                                         <small class="text-muted">Location: <%= job.jobDetails.location %></small>
                                     </p>
@@ -38,28 +44,53 @@
                                         <small class="text-muted">Comment: <%= job.comment %></small>
                                     </p>
                                     <p class="card-text">
-                                        <span class="badge <%= job.approved ? 'bg-success' : 'bg-secondary' %>">Status: <%= job.approved ? 'Approved' : 'Pending' %> </span>
+                                        <span class="badge <%= job.approved ? 'bg-success' : 'bg-secondary' %>">Status:
+                                            <%= job.approved ? 'Approved' : 'Pending' %>
+                                        </span>
                                     </p>
-                                    <% if (job.userId === user._id.toString()) { %>
-                                        <form action="/job/delete-job/<%= job._id %>?_method=DELETE" method="get" style="display:inline;" >
-                                            <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Delete</button>
-                                        </form>
-                                    <% } %>
-                                    <% if (job.userId != user._id.toString()) { %>
-                                        <a href="/job/<%= job._id %>" class="btn btn-primary">View Details</a>
-                                    <% } %>
 
-                                    
+                                    <% if (job?.timesheetDetails?.clockInSet && job?.timesheetDetails?.clockOutSet) { %>
+                                        <p class="card-text">
+                                            <span class="badge bg-success">Status:
+                                                Done
+                                            </span>
+                                        </p>
+                                    <% } %>
+                                    <% if (job.userId===user._id.toString()) { %>
+                                        <form action="/job/delete-job/<%= job._id %>?_method=DELETE" method="get"
+                                            style="display:inline;">
+                                            <button type="button" class="btn btn-danger"
+                                                onclick="confirmDelete(this)">Delete</button>
+                                        </form>
+                                        <% } %>
+                                            <!-- <% if (job.userId != user._id.toString() && !job.approved) { %>
+                                                <a href="/job/<%= job._id %>" class="btn btn-primary">View Details</a>
+                                         <% } %> -->
+                                            <% if (job.approved) { %>
+                                                <% if ( !job.timesheetDetails || !job?.timesheetDetails.clockInSet) { %>
+                                                    <button id="clockInButton" class="btn btn-success"
+                                                        onclick="clockIn('<%= job.jobDetails.latitude %>' , '<%= job.jobDetails.longitude %>' ,'<%= job.jobId %>', '<%= job._id %>')">Clock
+                                                        In</button>
+                                                    <% } %>
+
+                                                <% if ( job?.timesheetDetails?.clockInSet &&
+                                                            !job?.timesheetDetails?.clockOutSet) { %>
+                                                    <button id="clockInButton" class="btn btn-primary"
+                                                                onclick="clockOut('<%= job.jobDetails.latitude %>' , '<%= job.jobDetails.longitude %>' ,'<%= job.jobId %>', '<%= job._id %>')">
+                                                                Clock Out</button>
+                                                <% } %>
+                                            <% } %>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                <% }) %>
-            <% } %>
-        </div>
+                    <% }) %>
+                        <% } %>
     </div>
-    <script>
-        function confirmDelete(button) {
+</div>
+<script>
+    function confirmDelete(button) {
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you really want to delete this job? This action cannot be undone.",
@@ -76,5 +107,138 @@
             }
         });
     }
-    </script>
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        lat1 = Number(lat1);
+        lon1 = Number(lon1);
+        lat2 = Number(lat2);
+        lon2 = Number(lon2);
+
+        const toRadians = (degrees) => degrees * (Math.PI / 180);
+        const R = 6371e3; // Radius of the Earth in meters
+        const φ1 = toRadians(lat1);
+        const φ2 = toRadians(lat2);
+        const Δφ = toRadians(lat2 - lat1);
+        const Δλ = toRadians(lon2 - lon1);
+
+        const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        console.log(φ2)
+        return R * c; // Distance in meters
+    }
+
+    function clockIn(jobLat, jobLon, jobId, applicationId) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+                    const distance = calculateDistance(userLat, userLon, jobLat, jobLon);
+                    console.log("distance", distance)
+                    if (distance <= 100) {
+                        // User is within 100 meters of the job location
+                        clockInRequest(jobId, applicationId);
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'You are not within 100 meters of the job location.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                        return NaN; // Return NaN if any input is invalid
+                    }
+                },
+                () => {
+                    alert("Unable to retrieve your location.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function clockOut(jobLat, jobLon, jobId, applicationId) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+                    const distance = calculateDistance(userLat, userLon, jobLat, jobLon);
+                    console.log("distance", distance)
+                    if (distance <= 100) {
+                        // User is within 100 meters of the job location
+                        clockOutRequest(jobId, applicationId);
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'You are not within 100 meters of the job location.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                        return NaN; // Return NaN if any input is invalid
+                    }
+                },
+                () => {
+                    alert("Unable to retrieve your location.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function clockInRequest(jobId, applicationId) {
+        fetch('/timesheet/clockin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ jobId: jobId, applicationId: applicationId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Clocked In successfully!',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 2000 // Display for 2 seconds
+                    }).then(() => {
+                        location.reload(); // Refresh the page after the alert is closed
+                    });
+                } else {
+                    alert("Error clocking in.");
+                }
+            });
+    }
+
+    function clockOutRequest(jobId, applicationId) {
+        fetch('/timesheet/clockout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ jobId: jobId, applicationId: applicationId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Clocked out successfully!',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 2000 // Display for 2 seconds
+                    }).then(() => {
+                        location.reload(); // Refresh the page after the alert is closed
+                    });
+                } else {
+                    alert("Error clocking out.");
+                }
+            });
+    }
+
+</script>
+
 </html>
