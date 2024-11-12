@@ -58,11 +58,16 @@
                                     Approve
                                 </button>
                                 <% } else { %>
-                                    <!-- Rate Job Button, only visible after approval -->
-                                    <button class="btn btn-primary" onclick="openRatingPopup('<%= application._id %>', '<%= application.userId._id %>', '<%= application.jobId %>')">
-                                        Rate Job
-                                    </button>
-                                <% } %>
+
+                                    <% if (!application.ratingSubmitted) { %>
+                                        <!-- Rate Job Button, only visible after approval -->
+                                        <button class="btn btn-primary"
+                                            onclick="openRatingPopup('<%= application._id %>', '<%= application.userId._id %>', '<%= application.jobId %>')">
+                                            Rate Job
+                                        </button>
+                                        <% } %>
+
+                                    <% } %>
                         </div>
                     </div>
                     <% }) %>
@@ -70,15 +75,15 @@
     </div>
 </div>
 
- <!-- Hidden Form to Submit Rating -->
- <form id="ratingForm" method="POST" action="/application/user/ratings" style="display: none;">
+<!-- Hidden Form to Submit Rating -->
+<form id="ratingForm" method="POST" action="/application/user/ratings" style="display: none;">
     <input type="hidden" name="userId" id="userId" value="">
     <input type="hidden" name="jobId" id="jobId" value="">
     <input type="hidden" name="applicationId" id="applicationId" value="">
     <input type="hidden" name="rating" id="ratingValue" value="">
 </form>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- SweetAlert2 Confirmation Script -->
 <script>
     function confirmApproval(applicationId) {
@@ -102,10 +107,10 @@
 
 
     function openRatingPopup(applicationId, userId, jobId) {
-            rating = 0; // Reset rating for a fresh start in the popup
-            Swal.fire({
-                title: 'Rate this Job',
-                html: `
+        rating = 0; // Reset rating for a fresh start in the popup
+        Swal.fire({
+            title: 'Rate this Job',
+            html: `
                     <div class="star-rating" id="popup-rating">
                         <i class="fas fa-star" onclick="setRating(1)"></i>
                         <i class="fas fa-star" onclick="setRating(2)"></i>
@@ -114,30 +119,30 @@
                         <i class="fas fa-star" onclick="setRating(5)"></i>
                     </div>
                 `,
-                showCancelButton: true,
-                confirmButtonText: 'Submit Rating',
-                preConfirm: () => {
-                    return rating; // Return the selected rating
-                }
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    // Set form values and submit
-                    document.getElementById('userId').value = userId;
-                    document.getElementById('applicationId').value = applicationId;
-                    document.getElementById('ratingValue').value = result.value;
-                    document.getElementById('jobId').value = jobId;
-                    document.getElementById('ratingForm').submit();
-                }
-            });
-        }
+            showCancelButton: true,
+            confirmButtonText: 'Submit Rating',
+            preConfirm: () => {
+                return rating; // Return the selected rating
+            }
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                // Set form values and submit
+                document.getElementById('userId').value = userId;
+                document.getElementById('applicationId').value = applicationId;
+                document.getElementById('ratingValue').value = result.value;
+                document.getElementById('jobId').value = jobId;
+                document.getElementById('ratingForm').submit();
+            }
+        });
+    }
 
-        let rating = 0;
-        function setRating(value) {
-            rating = value; // Set the rating
-            const stars = document.querySelectorAll('#popup-rating i');
-            stars.forEach((star, index) => {
-                star.classList.toggle('text-warning', index < value);
-                star.classList.toggle('text-muted', index >= value);
-            });
-        }
+    let rating = 0;
+    function setRating(value) {
+        rating = value; // Set the rating
+        const stars = document.querySelectorAll('#popup-rating i');
+        stars.forEach((star, index) => {
+            star.classList.toggle('text-warning', index < value);
+            star.classList.toggle('text-muted', index >= value);
+        });
+    }
 </script>
