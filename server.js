@@ -14,6 +14,7 @@ import UserRouter from './src/routes/user.routes.js';
 import JobRouter from './src/routes/job.routes.js';
 import AppicationRouter from './src/routes/appication.routes.js';
 import TimesheetRouter from './src/routes/timesheet.routes.js';
+import CovidRouter from './src/routes/covid.routes.js';
 import expressEjsLayouts from 'express-ejs-layouts';
 
 // Initialization
@@ -51,6 +52,7 @@ app.use('/user', UserRouter);
 app.use('/job', JobRouter);
 app.use('/application', AppicationRouter);
 app.use('/timesheet', TimesheetRouter);
+app.use('/covid', CovidRouter);
 
 // listen to express server
 app.listen(8080, () => {

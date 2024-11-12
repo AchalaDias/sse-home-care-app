@@ -26,6 +26,10 @@ const userSchema = mongoose.Schema({
         required: true,
         default: 0
     },
+    covidPositiveDate: {
+        type: Date,
+        default: null
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Number
 }, { versionKey: false });

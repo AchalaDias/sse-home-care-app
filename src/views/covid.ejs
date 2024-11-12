@@ -1,0 +1,98 @@
+<style>
+    /* Custom light red background color for alerts */
+    .alert-light-red {
+        background-color: rgba(255, 0, 0, 0.1); /* Light red color */
+        color: #a94442; /* Darker red text color */
+        border: 1px solid rgba(255, 0, 0, 0.2);
+    }
+</style>
+
+<div class="container mt-5">
+    <h2>Update COVID Status</h2>
+    <p class="text-muted">Please select the date you tested positive for COVID-19.</p>
+
+     <!-- Display current COVID-positive date if available -->
+     <% if (user.covidPositiveDate) { %>
+        <div class="alert alert-info">
+            <strong>Current COVID Positive Date:</strong> <%= user.covidPositiveDate.toLocaleDateString() %>
+        </div>
+    <% } else { %>
+        <div class="alert alert-warning">
+            You have not set a COVID-positive date.
+        </div>
+    <% } %>
+
+    <!-- COVID Status Update Form -->
+    <form id="covidStatusForm" action="/covid/update-covid-status" method="POST" class="mt-4">
+        <div class="mb-3">
+            <label for="covidPositiveDate" class="form-label">COVID Positive Date</label>
+            <input type="date" class="form-control" id="covidPositiveDate" name="covidPositiveDate" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Status</button>
+    </form>
+</div>
+
+<!-- Notifications Section -->
+<div class="mt-5">
+    <h3>Notifications</h3>
+    <% if (notifications && notifications?.length > 0) { %>
+        <ul class="list-group">
+            <% notifications.forEach(notification => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center alert-light-red">
+                    <div>
+                        <p class="mb-1"><strong>Message:</strong> <%= notification.message %></p>
+                        <small class="text-muted">Date: <%= notification.createdAt %></small>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p class="text-muted">No notifications.</p>
+    <% } %>
+</div>
+
+
+<!-- JavaScript for form submission with SweetAlert2 success message -->
+<script>
+    document.getElementById("covidStatusForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        console.log(document.getElementById('covidPositiveDate').value )
+        const formData = new FormData(this);
+        fetch("/covid/update-covid-status", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ covidPositiveDate: document.getElementById('covidPositiveDate').value })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: "Status Updated",
+                    text: "Your COVID-positive status has been updated.",
+                    icon: "success",
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.reload(); // Reload page after success message
+                });
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: data.message || "Failed to update COVID status.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        })
+        .catch(() => {
+            Swal.fire({
+                title: "Error",
+                text: "Failed to update COVID status.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        });
+    });
+</script>
