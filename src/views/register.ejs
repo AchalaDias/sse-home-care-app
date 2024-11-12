@@ -74,7 +74,6 @@
     document.getElementById("signupButton").addEventListener("click", function (event) {
         var password = document.getElementById("newPassword").value;
         var confirmPassword = document.getElementById("confirmPassword").value;
-        console.log("LOLOLOLOL")
         if (password !== confirmPassword) {
             var errorDiv = document.createElement("div");
             errorDiv.className = "alert alert-danger mt-3";

@@ -1,80 +1,143 @@
-<!DOCTYPE html>
-<html lang="en">
+<style>
+
+</style>
 
 
-    <div class="container mt-5">
-        <div class="header">
-            Job Applications
-        </div>
-        <!-- Job Listings -->
-        <div class="job-list">
-            <% if (jobs.length === 0) { %>
-                <p class="text-center">No jobs found.</p>
+<div class="container mt-5">
+    <h2>Applications for <%= job.title %>
+    </h2>
+    <p>
+        <%= job.description %>
+    </p>
+
+    <!-- List of Applications -->
+    <div class="application-list">
+        <% if (applications.length===0) { %>
+            <p>No applications found for this job.</p>
             <% } else { %>
-                <% jobs.forEach(job => { %>
+                <% applications.forEach(application=> { %>
                     <div class="card mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <% if (job.jobDetails.images && job.jobDetails.images.length > 0) { %>
-                                    <img src="<%= job.jobDetails.images[0] %>" class="img-fluid rounded-start" alt="Job Image">
-                                <% } else { %>
-                                    <img src="/uploads/default-placeholder.jpg" class="img-fluid rounded-start" alt="Default Image">
-                                <% } %>
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= job.title %></h5>
-                                    <p class="card-text"><%= job.description %></p>
-                                    <p class="card-text">
-                                        <small class="text-muted">Location: <%= job.jobDetails.location %></small>
-                                    </p>
-                                    <p class="card-text">
-                                        <small class="text-muted">Cost($A): <%= job.jobDetails.cost %></small>
-                                    </p>
-                                    <p class="card-text">
-                                        <small class="text-muted">Job Date: <%= job.jobDetails.jobDate %></small>
-                                    </p>
-                                    <p class="card-text">
-                                        <small class="text-muted">Comment: <%= job.comment %></small>
-                                    </p>
-                                    <p class="card-text">
-                                        <span class="badge <%= job.approved ? 'bg-success' : 'bg-secondary' %>">Status: <%= job.approved ? 'Approved' : 'Pending' %> </span>
-                                    </p>
-                                    <% if (job.userId === user._id.toString()) { %>
-                                        <form action="/job/delete-job/<%= job._id %>?_method=DELETE" method="get" style="display:inline;" >
-                                            <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Delete</button>
-                                        </form>
-                                    <% } %>
-                                    <% if (job.userId != user._id.toString()) { %>
-                                        <a href="/job/<%= job._id %>" class="btn btn-primary">View Details</a>
-                                    <% } %>
+                        <div class="card-body">
+                            <h5 class="card-title">Applicant: <%= application.userId.username %>
+                            </h5>
+                            <p><strong>Comment:</strong>
+                                <%= application.comment %>
+                            </p>
+                            <p><strong>Status:</strong>
+                                <span class="badge <%= application.approved ? 'bg-success' : 'bg-secondary' %>">
+                                    <%= application.approved ? 'Approved' : 'Pending' %>
+                                </span>
+                            </p>
 
-                                    
-                                </div>
+                            <!-- Star Rating Display -->
+                            <div class="star-rating">
+                                <strong>User Ratings:</strong>
+                                <% const fullStars=Math.floor(application.userId.ratings); %>
+                                    <% const halfStar=application.userId.ratings % 1>= 0.5 ? 1 : 0; %>
+                                        <% const emptyStars=5 - fullStars - halfStar; %>
+
+                                            <!-- Display full stars -->
+                                            <% for (let i=0; i < fullStars; i++) { %>
+                                                <i class="fas fa-star text-warning"></i>
+                                                <% } %>
+
+                                                    <!-- Display half star if applicable -->
+                                                    <% if (halfStar) { %>
+                                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                                        <% } %>
+
+                                                            <!-- Display empty stars -->
+                                                            <% for (let i=0; i < emptyStars; i++) { %>
+                                                                <i class="far fa-star text-warning"></i>
+                                                                <% } %>
                             </div>
+
+                            <% if (!application.approved) { %>
+                                <!-- Approve Button with Confirmation -->
+                                <button class="btn btn-primary" onclick="confirmApproval('<%= application._id %>')">
+                                    Approve
+                                </button>
+                                <% } else { %>
+                                    <!-- Rate Job Button, only visible after approval -->
+                                    <button class="btn btn-primary" onclick="openRatingPopup('<%= application._id %>', '<%= application.userId._id %>', '<%= application.jobId %>')">
+                                        Rate Job
+                                    </button>
+                                <% } %>
                         </div>
                     </div>
-                <% }) %>
-            <% } %>
-        </div>
+                    <% }) %>
+                        <% } %>
     </div>
-    <script>
-        function confirmDelete(button) {
+</div>
+
+ <!-- Hidden Form to Submit Rating -->
+ <form id="ratingForm" method="POST" action="/application/user/ratings" style="display: none;">
+    <input type="hidden" name="userId" id="userId" value="">
+    <input type="hidden" name="jobId" id="jobId" value="">
+    <input type="hidden" name="applicationId" id="applicationId" value="">
+    <input type="hidden" name="rating" id="ratingValue" value="">
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+<!-- SweetAlert2 Confirmation Script -->
+<script>
+    function confirmApproval(applicationId) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "Do you really want to delete this job? This action cannot be undone.",
+            text: "Do you want to approve this application?",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
+            confirmButtonColor: '#28a745', // Green color for confirmation
+            cancelButtonColor: '#d33', // Red color for cancel
+            confirmButtonText: 'Yes, approve it!',
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Submit the form if user confirms
-                button.closest('form').submit();
+                // Redirect to the approval route for this application
+                window.location.href = `/application/${applicationId}/approve`;
             }
         });
     }
-    </script>
-</html>
+
+
+
+    function openRatingPopup(applicationId, userId, jobId) {
+            rating = 0; // Reset rating for a fresh start in the popup
+            Swal.fire({
+                title: 'Rate this Job',
+                html: `
+                    <div class="star-rating" id="popup-rating">
+                        <i class="fas fa-star" onclick="setRating(1)"></i>
+                        <i class="fas fa-star" onclick="setRating(2)"></i>
+                        <i class="fas fa-star" onclick="setRating(3)"></i>
+                        <i class="fas fa-star" onclick="setRating(4)"></i>
+                        <i class="fas fa-star" onclick="setRating(5)"></i>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Submit Rating',
+                preConfirm: () => {
+                    return rating; // Return the selected rating
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    // Set form values and submit
+                    document.getElementById('userId').value = userId;
+                    document.getElementById('applicationId').value = applicationId;
+                    document.getElementById('ratingValue').value = result.value;
+                    document.getElementById('jobId').value = jobId;
+                    document.getElementById('ratingForm').submit();
+                }
+            });
+        }
+
+        let rating = 0;
+        function setRating(value) {
+            rating = value; // Set the rating
+            const stars = document.querySelectorAll('#popup-rating i');
+            stars.forEach((star, index) => {
+                star.classList.toggle('text-warning', index < value);
+                star.classList.toggle('text-muted', index >= value);
+            });
+        }
+</script>

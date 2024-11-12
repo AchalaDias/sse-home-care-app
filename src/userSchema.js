@@ -16,6 +16,16 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    ratings: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    ratingCount: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Number
 }, { versionKey: false });

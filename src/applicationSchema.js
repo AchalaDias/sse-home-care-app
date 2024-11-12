@@ -5,6 +5,7 @@ const ApplicationSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, 
     comment: { type: String }, 
     approved: { type: Boolean, default: false },
+    ratingSubmitted: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 

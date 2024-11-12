@@ -146,7 +146,6 @@ export default class JobController {
                     applicationCount,   // Add applicationCount property
             };
         }));
-        console.log(jobsWithApplicationCounts);
         return res.render('my-jobs', { user: req.user, jobs: jobsWithApplicationCounts, query });
         } catch (error) {
             console.error(error);

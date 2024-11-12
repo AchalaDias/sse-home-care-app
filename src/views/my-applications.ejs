@@ -3,25 +3,20 @@
 
 
     <div class="container mt-5">
-        <!-- Search Bar -->
-        <div class="d-flex justify-content-center mb-4">
-            <form action="/job/my-jobs" method="get" class="d-flex" style="width: 60%;">
-                <input type="text" name="q" class="form-control" placeholder="Search for jobs..." value="<%= query %>">
-                <button type="submit" class="btn btn-primary ms-2">Search</button>
-            </form>
+        <div class="header">
+            Job Applications
         </div>
-
         <!-- Job Listings -->
         <div class="job-list">
             <% if (jobs.length === 0) { %>
-                <p class="text-center">No jobs found matching your search.</p>
+                <p class="text-center">No jobs found.</p>
             <% } else { %>
                 <% jobs.forEach(job => { %>
                     <div class="card mb-3">
                         <div class="row g-0">
                             <div class="col-md-4">
-                                <% if (job.images && job.images.length > 0) { %>
-                                    <img src="<%= job.images[0] %>" class="img-fluid rounded-start" alt="Job Image">
+                                <% if (job.jobDetails.images && job.jobDetails.images.length > 0) { %>
+                                    <img src="<%= job.jobDetails.images[0] %>" class="img-fluid rounded-start" alt="Job Image">
                                 <% } else { %>
                                     <img src="/uploads/default-placeholder.jpg" class="img-fluid rounded-start" alt="Default Image">
                                 <% } %>
@@ -31,28 +26,29 @@
                                     <h5 class="card-title"><%= job.title %></h5>
                                     <p class="card-text"><%= job.description %></p>
                                     <p class="card-text">
-                                        <small class="text-muted">Location: <%= job.location %></small>
+                                        <small class="text-muted">Location: <%= job.jobDetails.location %></small>
                                     </p>
                                     <p class="card-text">
-                                        <small class="text-muted">Cost($A): <%= job.cost %></small>
+                                        <small class="text-muted">Cost($A): <%= job.jobDetails.cost %></small>
                                     </p>
                                     <p class="card-text">
-                                        <strong>Tags:</strong>
-                                        <% job.tags.forEach(tag => { %>
-                                            <span class="badge bg-secondary"><%= tag %></span>
-                                        <% }) %>
+                                        <small class="text-muted">Job Date: <%= job.jobDetails.jobDate %></small>
                                     </p>
                                     <p class="card-text">
-                                        <small class="text-muted">Job Date: <%= job.jobDate %></small>
+                                        <small class="text-muted">Comment: <%= job.comment %></small>
+                                    </p>
+                                    <p class="card-text">
+                                        <span class="badge <%= job.approved ? 'bg-success' : 'bg-secondary' %>">Status: <%= job.approved ? 'Approved' : 'Pending' %> </span>
                                     </p>
                                     <% if (job.userId === user._id.toString()) { %>
                                         <form action="/job/delete-job/<%= job._id %>?_method=DELETE" method="get" style="display:inline;" >
                                             <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Delete</button>
                                         </form>
                                     <% } %>
-                                        <a href="/application/<%= job._id %>/list" class="btn btn-primary">View Applications
-                                            <span class="badge bg-secondary badge-circle"><%= job.applicationCount %></span>
-                                        </a>
+                                    <% if (job.userId != user._id.toString()) { %>
+                                        <a href="/job/<%= job._id %>" class="btn btn-primary">View Details</a>
+                                    <% } %>
+
                                     
                                 </div>
                             </div>

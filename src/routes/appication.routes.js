@@ -9,5 +9,8 @@ const UserRouter = express.Router();
 // Application Routes
 UserRouter.get('/', checkAuthenticated, applicationController.listJobApplications);
 UserRouter.post('/:id', checkAuthenticated, applicationController.applyJob);
+UserRouter.get('/:id/list', checkAuthenticated, applicationController.listApplications);
+UserRouter.get('/:applicationId/approve', checkAuthenticated, applicationController.approveUser);
+UserRouter.post('/user/ratings', checkAuthenticated, applicationController.rateUser);
 
 export default UserRouter;
