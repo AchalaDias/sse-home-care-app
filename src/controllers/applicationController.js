@@ -1,6 +1,8 @@
 import Application from '../applicationSchema.js';
 import Job from '../jobSchema.js';
 import User from "../userSchema.js";
+import Timesheet from '../timesheetSchema.js';
+
 
 export default class ApplicationController {
 
@@ -105,9 +107,25 @@ export default class ApplicationController {
             if (!job) return res.status(404).send('Job not found');
 
             // Fetch applications for this job
-            const applications = await Application.find({ jobId }).populate('userId', 'username ratings');
+            const applications = await Application.find({ jobId })
+                .populate('userId', 'username ratings');
 
-            res.render('applications', { job, applications, user: req.user });
+            const applicationsWithTimesheets = await Promise.all(
+                applications.map(async (application) => {
+                    const timesheets = await Timesheet.find({
+                        applicationId: application._id // Find timesheets by applicationId
+                    }).select('clockInTime clockOutTime userId jobId createdAt');
+
+                    return {
+                        ...application.toObject(), // Convert application to plain object
+                        timesheets // Add timesheet data to each application
+                    };
+                })
+            );
+
+            console.log(JSON.stringify(applicationsWithTimesheets))
+
+            res.render('applications', { job, applications: applicationsWithTimesheets, user: req.user });
         } catch (error) {
             console.error(error);
             res.status(500).send('Failed to submit application');
@@ -138,17 +156,17 @@ export default class ApplicationController {
             const { applicationId, userId, jobId, rating } = req.body;
 
             console.log(rating)
-    
+
             // Fetch the user and update their rating
             const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).json({ success: false, message: 'User not found' });
             }
-    
+
             // Calculate new average rating
             user.ratings = (user.ratings * user.ratingCount + parseInt(rating)) / (user.ratingCount + 1);
             user.ratingCount = user.ratingCount + 1;
-    
+
             await user.save();
             await Application.findByIdAndUpdate(applicationId, { ratingSubmitted: true });
             res.redirect(`/application/${jobId}/list`);

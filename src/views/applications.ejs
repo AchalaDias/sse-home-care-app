@@ -51,6 +51,28 @@
                                                                 <i class="far fa-star text-warning"></i>
                                                                 <% } %>
                             </div>
+                            <br>
+                            <% if (application?.timesheets?.clockInTime) { %>
+                                Clock in: <%= application?.timesheets?.clockInTime %>
+                            <% } %>
+
+                            <% if (application.timesheets.length === 0) { %>
+                                <p class="text-muted">No timesheet entries available.</p>
+                            <% } else { %>
+                                <% application.timesheets.forEach(timesheet => { %>
+                                    <div class="timesheet-entry mb-2 p-2 bg-light rounded">
+                                        <p class="mb-1">
+                                            <strong>Clock In:</strong> 
+                                            <%= timesheet.clockInTime ? timesheet.clockInTime.toLocaleString() : 'Not clocked in' %>
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Clock Out:</strong> 
+                                            <%= timesheet.clockOutTime ? timesheet.clockOutTime.toLocaleString() : 'Not clocked out' %>
+                                        </p>
+                                    </div>
+                                <% }) %>
+                            <% } %>
+
 
                             <% if (!application.approved) { %>
                                 <!-- Approve Button with Confirmation -->
