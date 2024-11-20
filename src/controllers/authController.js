@@ -31,8 +31,6 @@ export default class AuthController {
             if (!isValidUser) {
                 return res.render('login', { errorMsg: 'Incorrect Credentials.' });
             }
-
-            // return res.render('home', { user, errMsg: null });
             auditLogs.add(user._id, `User sign in: ${JSON.stringify(user)}`);
             return res.render('otp', { xx: { id: user }, errMsg: null });
         } catch (error) {
