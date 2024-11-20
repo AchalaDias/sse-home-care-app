@@ -1,10 +1,8 @@
 import bcrypt from 'bcrypt';
 import { UserModel } from '../models/user.model.js';
 import User from '../userSchema.js';
-import { ObjectId } from 'mongodb';
 import crypto from 'crypto';
 import sendMail from '../../config/mailer.js';
-import otpGenerator from 'otp-generator';
 
 const userModel = new UserModel();
 
@@ -97,8 +95,8 @@ export default class AuthController {
     createAdmin = async (req, res) => {
         const { username, email, password } = req.body;
         try {
-            await userModel.add(username, email, password, 'admin');
-            res.redirect('/auth/login');
+            await userModel.add(username, email, password, true);
+            return res.json({ success: true });
         } catch (error) {
             console.log(error);
         }

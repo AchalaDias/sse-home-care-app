@@ -30,9 +30,9 @@ const userSchema = mongoose.Schema({
         type: Date,
         default: null
     },
-    role: {
-        type: String,
-        default: 'user'
+    isAdmin: {
+        type: Boolean,
+        default: false
     },
     otp: {
         type: String,

@@ -1,12 +1,7 @@
 import { UserModel } from '../models/user.model.js';
-import Job from '../jobSchema.js';
-import Application from '../applicationSchema.js';
-import Timesheet from '../timesheetSchema.js';
 import User from '../userSchema.js';
 import Covid from '../covidSchema.js';
 import sendMail from '../../config/mailer.js';
-
-
 
 export default class CovidController {
     view = async (req, res) => {

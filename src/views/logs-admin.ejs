@@ -1,0 +1,30 @@
+<body class="bg-light">
+    <div class="container py-5">
+      <h1 class="text-center mb-4">Users and Uploaded Documents</h1>
+  
+      <% if (logs && logs.length > 0) { %>
+        <table class="table table-bordered table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>User ID</th>
+              <th>Log</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% logs.forEach((log, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= log._id %></td>
+                <td><%= log.log %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <div class="alert alert-warning text-center">
+          No Logs have been uploaded yet.
+        </div>
+      <% } %>
+    </div>
+  </body>

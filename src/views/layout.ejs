@@ -119,7 +119,8 @@
 
 <body>
     <% if (user) { %>
-        <!-- Left Sidebar -->
+        <% if(!user.isAdmin){ %>
+            <!-- Left Sidebar -->
         <div class="sidebar">
             <h5>Home Care</h5>
             <ul class="nav flex-column">
@@ -129,6 +130,19 @@
                 <li class="nav-item"><a href="/auth/logout" class="nav-link">Logout</a></li>
             </ul>
         </div>
+        <% } %>
+
+
+        <% if(user.isAdmin){ %>
+            <!-- Left Sidebar -->
+        <div class="sidebar">
+            <h5>Home Care</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="/auth/logout" class="nav-link">Logout</a></li>
+            </ul>
+        </div>
+        <% } %>
         <% } %>
 
             <!-- Main Content -->

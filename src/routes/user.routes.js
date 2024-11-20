@@ -1,5 +1,6 @@
 import express from 'express';
 import UserController from '../controllers/userController.js';
+import AuditLogsController from '../controllers/auditLogsController.js';
 import { checkAuthenticated } from '../../config/passport.js';
 import path from 'path';
 
@@ -30,6 +31,7 @@ const upload = multer({
   });
 
 const userController = new UserController();
+const auditLogsController = new AuditLogsController();
 
 const UserRouter = express.Router();
 
@@ -43,5 +45,8 @@ UserRouter.post('/user-reset-pass/:id', checkAuthenticated, userController.reset
 UserRouter.get('/profile',checkAuthenticated, userController.profile);
 UserRouter.post('/verification',checkAuthenticated, upload.single("pdfFile"), userController.verifyUser);
 
+UserRouter.get('/users',checkAuthenticated, userController.users);
+UserRouter.post('/approve',checkAuthenticated, userController.approve);
+UserRouter.get('/logs',checkAuthenticated, auditLogsController.view);
 
 export default UserRouter;

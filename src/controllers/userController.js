@@ -173,7 +173,34 @@ export default class UserController {
             console.error(error);
             res.status(500).send('Server error');
         }
+    }
 
+    users = async (req, res) => {
+        const id = req.params.id;
+        try {
+            const users = await User.find({
+                isAdmin: false
+            });
+            return res.render('users-admin', { user: req.user, users, errMsg: null });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
+    approve = async (req, res) => {
+        try {
+            const { userId } = req.body;
+
+            console.log(userId)
+            
+            await User.findByIdAndUpdate(userId, { accountAccepted: true  });
+            const users = await User.find({
+                isAdmin: false
+            });
+            console.log(users)
+            return res.render('users-admin', { user: req.user, users, errMsg: null });
+        } catch (error) {
+            console.log(error);
+        }
     }
 }

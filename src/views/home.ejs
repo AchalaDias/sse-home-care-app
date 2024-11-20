@@ -12,19 +12,32 @@
         <%= user.username.charAt(0).toUpperCase() + user.username.slice(1) %>, Welcome to Home Care Center
     </div>
 
-    <!-- Panels -->
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="panel panel-create" onclick="window.location.href='/job/create-job'">Create Job</div>
+    <% if(user.isAdmin){ %>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="panel panel-create" onclick="window.location.href='/user/users'">Users</div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-find" onclick="window.location.href='/user/logs'">Audit Logs</div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <div class="panel panel-find" onclick="window.location.href='/job/find-job'">Find Jobs</div>
+    <% } %>
+
+    <% if(!user.isAdmin){ %>
+        <!-- Panels -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="panel panel-create" onclick="window.location.href='/job/create-job'">Create Job</div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-find" onclick="window.location.href='/job/find-job'">Find Jobs</div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-create" onclick="window.location.href='/job/my-jobs'">Your Jobs</div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-find" onclick="window.location.href='/application'">Applications</div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <div class="panel panel-create" onclick="window.location.href='/job/my-jobs'">Your Jobs</div>
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-find" onclick="window.location.href='/application'">Applications</div>
-        </div>
-    </div>
+    <% } %>
 </div>

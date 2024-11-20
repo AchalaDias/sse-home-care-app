@@ -39,7 +39,7 @@ const sendOtp = async (email, otp) => {
     const mailOptions = {
         from: 'ssedemo14@gmail.com',
         to: email,
-        subject: 'Password Reset Request',
+        subject: 'OTP',
         html: `This is your one time password ${otp}`,
     };
 
