@@ -2,12 +2,13 @@ import User from "../userSchema.js";
 
 export class UserModel {
 
-    async add(username, email, password) {
+    async add(username, email, password, role='user') {
         try {
             const user = new User({
                 username: username,
                 email: email,
-                password: password
+                password: password,
+                role: role
             })
             await user.save();
             return user;

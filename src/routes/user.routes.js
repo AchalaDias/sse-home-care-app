@@ -15,7 +15,19 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
+
+const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+      // Accept only PDF files
+      if (file.mimetype === "application/pdf") {
+        cb(null, true);
+      } else {
+        cb(new Error("Only PDF files are allowed!"), false);
+      }
+    },
+  });
 
 const userController = new UserController();
 
@@ -29,7 +41,7 @@ UserRouter.post('/reset-password/:token', userController.postReset);
 UserRouter.post('/user-reset-pass/:id', checkAuthenticated, userController.reset);
 
 UserRouter.get('/profile',checkAuthenticated, userController.profile);
-
+UserRouter.post('/verification',checkAuthenticated, upload.single("pdfFile"), userController.verifyUser);
 
 
 export default UserRouter;

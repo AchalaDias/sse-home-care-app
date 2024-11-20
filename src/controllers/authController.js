@@ -67,7 +67,6 @@ export default class AuthController {
         }
     }
 
-
     forgot_password = async (req, res) => {
         const email = req.body.email;
         try {
@@ -92,6 +91,16 @@ export default class AuthController {
         } catch (error) {
             console.log(error);
             return res.render('forgot-pass', { errorMsg: 'Something went wrong' });
+        }
+    }
+
+    createAdmin = async (req, res) => {
+        const { username, email, password } = req.body;
+        try {
+            await userModel.add(username, email, password, 'admin');
+            res.redirect('/auth/login');
+        } catch (error) {
+            console.log(error);
         }
     }
 }

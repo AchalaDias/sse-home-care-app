@@ -19,7 +19,7 @@ AuthRouter.post('/register', checkNotAuthenticated, verifyCaptcha, authControlle
 AuthRouter.get('/login', checkNotAuthenticated, (req, res) => { return res.render('login', { user: null }); })
 AuthRouter.get('/otp', (req, res) => { return res.render('otp', { userId: req.user._id, user: null, errorMsg: null }); })
 AuthRouter.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/auth/otp',
+    successRedirect: '/',
     failureRedirect: '/auth/login',
     failureFlash: true
 }));
@@ -35,5 +35,5 @@ AuthRouter.get('/forgot-password', (req, res) => { res.render('forgot-pass'); })
 AuthRouter.post('/forgot-password', authController.forgot_password);
 AuthRouter.get('/logout', checkAuthenticated, authController.logout);
 AuthRouter.post('/otp', authController.verifyOtp);
-
+AuthRouter.post('/create/admin', authController.createAdmin);
 export default AuthRouter;

@@ -79,6 +79,19 @@ export default class UserController {
             console.log(error);
         }
     }
+
+    verifyUser = async (req, res) => {
+        try {
+            const user = await User.findOneAndUpdate(
+                { _id: req.user._id },
+                { verificationCheckFile: req.file.filename },
+            );
+            return res.render('profile', { user, errMsg: null });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     viewCreateJob = async (req, res) => {
         const id = req.params.id;
         try {

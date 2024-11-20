@@ -95,25 +95,46 @@
         <!-- Thumbnail with initials -->
         <div class="thumbnail mx-auto text-center">
             <!-- Replace 'A' with the user's initial letter(s) dynamically -->
-            A
+            <%= user.username.substring(0, 1).toUpperCase() %>
         </div>
         
         <!-- Profile Details Form -->
-        <h2>John Doe</h2>
-        <form>
+        <h2><%= user.username %></h2>
             <div class="form-group mb-3">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" value="John Doe" disabled>
+                <input type="text" class="form-control" id="username" name="username" value="<%= user.username %>" disabled>
             </div>
             <div class="form-group mb-3">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" value="johndoe@example.com" disabled>
+                <input type="email" class="form-control" id="email" name="email" value="<%= user.email %>" disabled>
             </div>
-            <div class="form-group mb-3">
-                <label for="phone">Phone</label>
-                <input type="text" class="form-control" id="phone" name="phone" value="+1234567890" disabled>
-            </div>
-            <button type="button" class="btn btn-primary mt-4">Edit Profile</button>
-        </form>
+
+            <% if(!user.verificationCheckFile){ %>
+                <form action="/user/verification" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                      <label for="pdfFile" class="form-label">User Verification Document</label>
+                      <input 
+                        type="file" 
+                        name="pdfFile" 
+                        id="pdfFile" 
+                        class="form-control" 
+                        accept="application/pdf" 
+                        required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Upload</button>
+                  </form>
+            <% } %>
+            <% if(user.verificationCheckFile){ %>
+                <% if(user.accountAccepted){ %>
+                    <div class="alert alert-success" role="alert">
+                        Your account verified!
+                    </div>
+                <% } %>
+                <% if(!user.accountAccepted){ %>
+                    <div class="alert alert-info" role="alert">
+                        Your account verification is pending.
+                    </div>
+                <% } %>
+            <% } %>
     </div>
 </div>

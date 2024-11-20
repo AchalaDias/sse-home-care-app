@@ -38,6 +38,14 @@ const userSchema = mongoose.Schema({
         type: String,
         default: null
     },
+    verificationCheckFile: {
+        type: String,
+        default: null
+    },
+    accountAccepted: {
+        type: Boolean,
+        default: false
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Number
 }, { versionKey: false });
