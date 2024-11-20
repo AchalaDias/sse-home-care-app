@@ -27,7 +27,6 @@ export default class TimesheetController {
             auditLogs.add(req.user._id, `Clock In: ${JSON.stringify(timesheet)}`);
             res.json({ success: true });
         } catch (error) {
-            console.error(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
         }
     }
@@ -50,7 +49,6 @@ export default class TimesheetController {
             auditLogs.add(req.user._id, `Clock out: ${JSON.stringify(timesheet)}`);
             res.json({ success: true, message: "Clocked out successfully", timesheet });
         } catch (error) {
-            console.error(error);
             res.status(500).json({ success: false, message: "Failed to clock out" });
         }
     }

@@ -68,6 +68,7 @@ export default class UserController {
             return res.render('home', { user, errMsg: null });
         } catch (error) {
             console.log(error);
+            return res.status(500).send('An error occurred during password reset.');
         }
     }
 
