@@ -48,5 +48,6 @@ UserRouter.post('/verification',checkAuthenticated, upload.single("pdfFile"), us
 UserRouter.get('/users',checkAuthenticated, userController.users);
 UserRouter.post('/approve',checkAuthenticated, userController.approve);
 UserRouter.get('/logs',checkAuthenticated, auditLogsController.view);
+UserRouter.get('/logs/search',checkAuthenticated, auditLogsController.search);
 
 export default UserRouter;

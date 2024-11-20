@@ -36,4 +36,6 @@ AuthRouter.post('/forgot-password', authController.forgot_password);
 AuthRouter.get('/logout', checkAuthenticated, authController.logout);
 AuthRouter.post('/otp', authController.verifyOtp);
 AuthRouter.post('/create/admin', authController.createAdmin);
+
+
 export default AuthRouter;

@@ -54,4 +54,24 @@ const sendOtp = async (email, otp) => {
     }
 };
 
+const sendCovidAlert = async (email, message) => {
+    const transporter = await mailer();
+    const mailOptions = {
+        from: 'ssedemo14@gmail.com',
+        to: email,
+        subject: 'OTP',
+        html: message,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+    } catch (error) {
+        console.error('Email could not be sent:', error);
+    } finally {
+        // Close the transporter to release resources
+        transporter.close();
+    }
+};
+
 export default { sendMail, sendOtp };

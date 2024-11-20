@@ -1,6 +1,9 @@
 import User from "../userSchema.js";
 import Job from '../jobSchema.js';
 import Application from '../applicationSchema.js';
+import { AuditLogsModel } from '../models/audit.model.js';
+
+const auditLogs = new AuditLogsModel();
 
 export default class JobController {
     viewCreateJob = async (req, res) => {
@@ -47,7 +50,7 @@ export default class JobController {
 
             // Save the job in MongoDB
             await job.save();
-
+            auditLogs.add(req.user._id, `Job created: ${JSON.stringify(job)}`);
             return res.render('home', { user: req.user, errMsg: null });
         } catch (error) {
             console.error(error);
@@ -110,6 +113,7 @@ export default class JobController {
             }
 
             await job.deleteOne();
+            auditLogs.add(req.user._id, `Job deleted: ${JSON.stringify(job)}`);
             res.redirect('/job/my-jobs');
         } catch (error) {
             console.error(error);

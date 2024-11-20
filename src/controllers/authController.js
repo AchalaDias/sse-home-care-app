@@ -3,7 +3,9 @@ import { UserModel } from '../models/user.model.js';
 import User from '../userSchema.js';
 import crypto from 'crypto';
 import sendMail from '../../config/mailer.js';
+import { AuditLogsModel } from '../models/audit.model.js';
 
+const auditLogs = new AuditLogsModel();
 const userModel = new UserModel();
 
 export default class AuthController {
@@ -31,6 +33,7 @@ export default class AuthController {
             }
 
             // return res.render('home', { user, errMsg: null });
+            auditLogs.add(user._id, `User sign in: ${JSON.stringify(user)}`);
             return res.render('otp', { xx: { id: user }, errMsg: null });
         } catch (error) {
             console.log(error);
@@ -96,6 +99,7 @@ export default class AuthController {
         const { username, email, password } = req.body;
         try {
             await userModel.add(username, email, password, true);
+            
             return res.json({ success: true });
         } catch (error) {
             console.log(error);

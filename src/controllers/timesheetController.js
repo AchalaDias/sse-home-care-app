@@ -4,7 +4,9 @@ import Application from '../applicationSchema.js';
 import Timesheet from '../timesheetSchema.js';
 import User from '../userSchema.js';
 import sendMail from '../../config/mailer.js';
+import { AuditLogsModel } from '../models/audit.model.js';
 
+const auditLogs = new AuditLogsModel();
 const userModel = new UserModel();
 
 export default class TimesheetController {
@@ -22,6 +24,7 @@ export default class TimesheetController {
             });
 
             await timesheet.save();
+            auditLogs.add(req.user._id, `Clock In: ${JSON.stringify(timesheet)}`);
             res.json({ success: true });
         } catch (error) {
             console.error(error);
@@ -44,7 +47,7 @@ export default class TimesheetController {
             if (!timesheet) {
                 return res.status(404).json({ success: false, message: "No active clock-in found for this job" });
             }
-    
+            auditLogs.add(req.user._id, `Clock out: ${JSON.stringify(timesheet)}`);
             res.json({ success: true, message: "Clocked out successfully", timesheet });
         } catch (error) {
             console.error(error);

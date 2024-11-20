@@ -2,6 +2,9 @@ import { UserModel } from '../models/user.model.js';
 import User from '../userSchema.js';
 import Covid from '../covidSchema.js';
 import sendMail from '../../config/mailer.js';
+import { AuditLogsModel } from '../models/audit.model.js';
+
+const auditLogs = new AuditLogsModel();
 
 export default class CovidController {
     view = async (req, res) => {
@@ -29,6 +32,7 @@ export default class CovidController {
                 message: "You may have been exposed to COVID-19. A user who attended to a job on has reported testing positive."
             });
             await covid.save()
+            auditLogs.add(userId, "Covid sataus updated");
             // Trigger timesheet check for the past 14 days
             // await checkAndNotifyContacts(userId, new Date(covidPositiveDate));
             return res.json({ success: true });

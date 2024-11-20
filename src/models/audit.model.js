@@ -23,4 +23,17 @@ export class AuditLogsModel {
             console.log(error);
         }
     }
+
+    async search(query) {
+        try {
+            const logs = await AuditLogs.find({
+                $or: [
+                    { log: { $regex: query, $options: 'i' } }
+                ],
+            }).sort({ createdAt: -1 });
+            return logs;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }

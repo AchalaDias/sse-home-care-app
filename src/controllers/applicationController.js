@@ -2,6 +2,9 @@ import Application from '../applicationSchema.js';
 import Job from '../jobSchema.js';
 import User from "../userSchema.js";
 import Timesheet from '../timesheetSchema.js';
+import { AuditLogsModel } from '../models/audit.model.js';
+
+const auditLogs = new AuditLogsModel();
 
 
 export default class ApplicationController {
@@ -17,7 +20,7 @@ export default class ApplicationController {
                 userId,
                 comment
             });
-
+            auditLogs.add(userId, `Applied for job: ${JSON.stringify(apply)}`)
             await apply.save();
             res.redirect(`/application`);
         } catch (error) {
@@ -140,6 +143,7 @@ export default class ApplicationController {
 
                 // Update the application status to approved
                 const job = await Application.findByIdAndUpdate(applicationId, { approved: true });
+                auditLogs.add(req.user._id, `User Approve for Job: ${JSON.stringify(job)}`);
                 res.redirect(`/application/${job.jobId}/list`);
             } catch (error) {
                 console.error(error);
@@ -155,8 +159,6 @@ export default class ApplicationController {
         try {
             const { applicationId, userId, jobId, rating } = req.body;
 
-            console.log(rating)
-
             // Fetch the user and update their rating
             const user = await User.findById(userId);
             if (!user) {
@@ -168,6 +170,7 @@ export default class ApplicationController {
             user.ratingCount = user.ratingCount + 1;
 
             await user.save();
+            auditLogs.add(userId, `User rating updated: ${JSON.stringify(user)}`);
             await Application.findByIdAndUpdate(applicationId, { ratingSubmitted: true });
             res.redirect(`/application/${jobId}/list`);
         } catch (error) {

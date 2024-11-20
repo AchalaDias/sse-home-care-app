@@ -2,6 +2,9 @@ import { ObjectId } from "mongodb";
 import User from "../userSchema.js";
 import bcrypt from 'bcrypt';
 import Job from '../jobSchema.js';
+import { AuditLogsModel } from '../models/audit.model.js';
+
+const auditLogs = new AuditLogsModel();
 
 export default class UserController {
     getResetForm = async (req, res) => {
