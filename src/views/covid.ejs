@@ -34,7 +34,7 @@
 
 <!-- Notifications Section -->
 <div class="mt-5">
-    <h3>Notifications</h3>
+    <h3>Alerts</h3>
     <% if (notifications && notifications?.length > 0) { %>
         <ul class="list-group">
             <% notifications.forEach(notification => { %>
@@ -54,6 +54,8 @@
 
 <!-- JavaScript for form submission with SweetAlert2 success message -->
 <script>
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("covidPositiveDate").setAttribute("max", today);
     document.getElementById("covidStatusForm").addEventListener("submit", function(event) {
         event.preventDefault();
         console.log(document.getElementById('covidPositiveDate').value )

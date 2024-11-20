@@ -13,7 +13,7 @@ export default class CovidController {
     view = async (req, res) => {
         try {
             const notifications = await Covid.find({ userId: req.user._id });
-            return res.render('covid', { user: req.user, notifications: [{ createdAt: "2024-10-12", message: "sdfs" }] });
+            return res.render('covid', { user: req.user, notifications: notifications });
         } catch (error) {
             console.error(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
@@ -27,16 +27,8 @@ export default class CovidController {
 
             // Update user's COVID-positive date
             await User.findByIdAndUpdate(userId, { covidPositiveDate: new Date(covidPositiveDate) });
-
-            const covid = new Covid({
-                userId: req.user._id,
-                message: COVID_MESSAGE
-            });
-            await covid.save()
-            auditLogs.add(userId, "Covid sataus updated");
-
+        
             // Trigger timesheet check for the past 14 days
-
             // Calculate the date range
             const startDate = new Date(covidPositiveDate);
             const endDate = new Date(covidPositiveDate);
@@ -57,9 +49,20 @@ export default class CovidController {
             // Fetch user details (emails) from the User collection
             const users = await User.find({ _id: { $in: userIds } }).select('email name');
 
+            // Update covid alerts
+            users.map(async (user) => {
+                if (user._id !== userId) {
+                    const alert = new Covid({
+                        userId: user._id,
+                        message: COVID_MESSAGE
+                    });
+                    await alert.save()
+                }
+            });
+
             // Send emails to the fetched users
             users.map((user) => sendMail.sendCovidAlert(user.email, COVID_MESSAGE));
-
+            auditLogs.add(userId, "Covid sataus updated");
             // await checkAndNotifyContacts(userId, new Date(covidPositiveDate));
             return res.json({ success: true });
         } catch (error) {

@@ -50,7 +50,7 @@
                                             <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Delete</button>
                                         </form>
                                     <% } %>
-                                    <% if (job.userId != user._id.toString()) { %>
+                                    <% if (job.userId != user._id.toString() && user.accountAccepted) { %>
                                         <a href="/job/<%= job._id %>" class="btn btn-primary">View Details</a>
                                     <% } %>
                                     
