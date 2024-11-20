@@ -30,6 +30,14 @@ const userSchema = mongoose.Schema({
         type: Date,
         default: null
     },
+    role: {
+        type: String,
+        default: 'user'
+    },
+    otp: {
+        type: String,
+        default: null
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Number
 }, { versionKey: false });

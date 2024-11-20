@@ -8,7 +8,7 @@ import sendMail from '../../config/mailer.js';
 
 
 
-export default class TimesheetController {
+export default class CovidController {
     view = async (req, res) => {
         try {
             const notifications = await Covid.find({ userId: req.user._id });

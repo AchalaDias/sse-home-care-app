@@ -1,7 +1,8 @@
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
 import User from "../src/userSchema.js";
-
+import otpGenerator from 'otp-generator';
+import Mail from './mailer.js';
 
 function initialize(passport) {
     passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
@@ -11,7 +12,16 @@ function initialize(passport) {
                 return done(null, false, { message: 'No user with that email' });
             }
             const isMatch = await bcrypt.compare(password, user.password);
-            if (isMatch) return done(null, user);
+            if (isMatch) {
+                const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+                await User.findOneAndUpdate(
+                    { email: email },
+                    { otp: otp }
+                );
+                console.log(otp)
+                Mail.sendOtp(email, otp)
+                return done(null, user);
+            }
             else return done(null, false, { message: 'Incorrect password' })
         } catch (error) {
             return done(error);

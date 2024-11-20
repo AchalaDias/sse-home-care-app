@@ -32,4 +32,15 @@ export class UserModel {
             console.log(error);
         }
     }
+
+    async verifyOtp(id, otp) {
+        try {
+            const user = await User.findById(id);
+            if(user.otp === otp) 
+                return user
+            return null;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }

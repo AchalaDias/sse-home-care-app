@@ -17,8 +17,9 @@ verifyGoogle(passport);
 AuthRouter.get('/register', checkNotAuthenticated, (req, res) => { return res.render('register', { user: null }); })
 AuthRouter.post('/register', checkNotAuthenticated, verifyCaptcha, authController.register);
 AuthRouter.get('/login', checkNotAuthenticated, (req, res) => { return res.render('login', { user: null }); })
+AuthRouter.get('/otp', (req, res) => { return res.render('otp', { userId: req.user._id, user: null, errorMsg: null }); })
 AuthRouter.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/',
+    successRedirect: '/auth/otp',
     failureRedirect: '/auth/login',
     failureFlash: true
 }));
@@ -33,5 +34,6 @@ AuthRouter.get('/google/callback', passport.authenticate('google', {
 AuthRouter.get('/forgot-password', (req, res) => { res.render('forgot-pass'); })
 AuthRouter.post('/forgot-password', authController.forgot_password);
 AuthRouter.get('/logout', checkAuthenticated, authController.logout);
+AuthRouter.post('/otp', authController.verifyOtp);
 
 export default AuthRouter;

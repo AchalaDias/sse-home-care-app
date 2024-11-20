@@ -4,6 +4,7 @@ import User from '../userSchema.js';
 import { ObjectId } from 'mongodb';
 import crypto from 'crypto';
 import sendMail from '../../config/mailer.js';
+import otpGenerator from 'otp-generator';
 
 const userModel = new UserModel();
 
@@ -22,12 +23,28 @@ export default class AuthController {
         const { email, password } = req.body;
         try {
             const user = await userModel.verify(email);
+            console.log(user)
             if (!user) {
                 return res.render('login', { errorMsg: 'Incorrect Credentials.' });
             }
             const isValidUser = await bcrypt.compare(password, user.password);
             if (!isValidUser) {
                 return res.render('login', { errorMsg: 'Incorrect Credentials.' });
+            }
+
+            // return res.render('home', { user, errMsg: null });
+            return res.render('otp', { xx: { id: user }, errMsg: null });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    verifyOtp = async (req, res) => {
+        const { otp, userId } = req.body;
+        try {
+            const user = await userModel.verifyOtp(userId, otp);
+            if (!user) {
+                return res.render('otp', { userId, user: null, errorMsg: 'Incorrect OTP.' });
             }
             return res.render('home', { user, errMsg: null });
         } catch (error) {
@@ -69,7 +86,7 @@ export default class AuthController {
             // Send a password reset email with the token link
             const resetLink = `http://localhost:8080/user/reset-password/${token}`;
 
-            sendMail(email, resetLink);
+            sendMail.sendMail(email, resetLink);
 
             return res.render('forgot-pass', { successMsg: 'Password reset link has been successfully sent to your email address' });
         } catch (error) {
