@@ -31,7 +31,7 @@ AuthRouter.get('/google/callback', passport.authenticate('google', {
     failureFlash: true
 }));
 
-AuthRouter.get('/forgot-password', (req, res) => { res.render('forgot-pass'); })
+AuthRouter.get('/forgot-password', (req, res) => { res.render('forgot-pass', { user: null }); })
 AuthRouter.post('/forgot-password', authController.forgot_password);
 AuthRouter.get('/logout', checkAuthenticated, authController.logout);
 AuthRouter.post('/otp', authController.verifyOtp);

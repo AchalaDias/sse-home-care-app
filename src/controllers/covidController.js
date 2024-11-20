@@ -61,7 +61,7 @@ export default class CovidController {
             });
 
             // Send emails to the fetched users
-            users.map((user) => sendMail.sendCovidAlert(user.email, COVID_MESSAGE));
+            users.map((user) => sendMail.sendCovidAlert(user.email));
             auditLogs.add(userId, "Covid sataus updated");
             // await checkAndNotifyContacts(userId, new Date(covidPositiveDate));
             return res.json({ success: true });

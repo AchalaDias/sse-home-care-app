@@ -17,10 +17,10 @@ export default class UserController {
 
             if (!user) {
                 // Token is invalid or has expired
-                return res.render('forgot-pass', { errorMsg: 'Password reset link has been expired!' });
+                return res.render('forgot-pass', { user: null, errorMsg: 'Password reset link has been expired!' });
             }
             // Display a password reset form
-            res.render('reset-password', { token });
+            res.render('reset-password', { token, user: null });
         } catch (error) {
             console.log('Something went wrong', error);
         }
@@ -37,7 +37,7 @@ export default class UserController {
 
             if (!user) {
                 // Token is invalid or has expired
-                return res.render('forgot-pass', { errorMsg: 'Password reset link has been expired!' });
+                return res.render('login', { user: null, errorMsg: 'Password reset link has been expired!' });
             }
             // Update the user's password using the instance
             user.password = newPassword;
@@ -45,8 +45,7 @@ export default class UserController {
             user.resetPasswordExpires = undefined;
 
             await user.save();
-
-            return res.redirect('/auth/login');
+            return res.redirect('login', { user: null });
         } catch (error) {
             console.log('Something went wrong', error);
             // Handle the error appropriately

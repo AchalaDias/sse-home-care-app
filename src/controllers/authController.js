@@ -86,10 +86,10 @@ export default class AuthController {
 
             sendMail.sendMail(email, resetLink);
 
-            return res.render('forgot-pass', { successMsg: 'Password reset link has been successfully sent to your email address' });
+            return res.render('login', { user: null, successMsg: 'Password reset link has been successfully sent to your email address' });
         } catch (error) {
             console.log(error);
-            return res.render('forgot-pass', { errorMsg: 'Something went wrong' });
+            return res.render('forgot-pass', { user: null, errorMsg: 'Something went wrong' });
         }
     }
 
