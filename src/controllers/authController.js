@@ -23,7 +23,6 @@ export default class AuthController {
         const { email, password } = req.body;
         try {
             const user = await userModel.verify(email);
-            console.log(user)
             if (!user) {
                 return res.render('login', { errorMsg: 'Incorrect Credentials.' });
             }
@@ -32,7 +31,7 @@ export default class AuthController {
                 return res.render('login', { errorMsg: 'Incorrect Credentials.' });
             }
             auditLogs.add(user._id, `User sign in: ${JSON.stringify(user)}`);
-            return res.render('otp', { xx: { id: user }, errMsg: null });
+            return res.render('otp', { user, errMsg: null });
         } catch (error) {
             console.log(error);
         }
@@ -47,7 +46,7 @@ export default class AuthController {
             }
             return res.render('home', { user, errMsg: null });
         } catch (error) {
-            console.log(error);
+            console.log("************************", error);
         }
     }
 
@@ -78,9 +77,7 @@ export default class AuthController {
             const token = crypto.randomBytes(20).toString('hex');
             user.resetPasswordToken = token;
             user.resetPasswordExpires = Date.now() + 300000;
-
             await user.save();
-
             // Send a password reset email with the token link
             const resetLink = `http://localhost:8080/user/reset-password/${token}`;
 
@@ -88,7 +85,6 @@ export default class AuthController {
 
             return res.render('login', { user: null, successMsg: 'Password reset link has been successfully sent to your email address' });
         } catch (error) {
-            console.log(error);
             return res.render('forgot-pass', { user: null, errorMsg: 'Something went wrong' });
         }
     }

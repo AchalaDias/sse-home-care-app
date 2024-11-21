@@ -36,7 +36,7 @@ export class UserModel {
 
     async verifyOtp(id, otp) {
         try {
-            const user = await User.findById(id);
+            const user = await User.findOne({ _id: id });
             if(user.otp === otp) 
                 return user
             return null;

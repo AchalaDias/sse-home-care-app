@@ -24,8 +24,7 @@ export default class ApplicationController {
             await apply.save();
             res.redirect(`/application`);
         } catch (error) {
-            console.error(error);
-            res.status(500).send('Failed to submit application');
+            res.status(500).json({ success: false, message: 'Failed to submit application' });
         }
     }
 
@@ -93,11 +92,9 @@ export default class ApplicationController {
                     }
                 }
             ]);
-            console.log(applicationsWithJobs)
             return res.render('my-applications', { user: req.user, jobs: applicationsWithJobs });
         } catch (error) {
-            console.error(error);
-            res.status(500).send('Failed to load application');
+            res.status(500).json({ success: false, message: 'Failed to load application' });
         }
     }
 
@@ -106,8 +103,8 @@ export default class ApplicationController {
             const jobId = req.params.id;
 
             // Fetch the job details (optional)
-            const job = await Job.findById(jobId);
-            if (!job) return res.status(404).send('Job not found');
+            const job = await Job.findOne({ _id: jobId });
+            if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
 
             // Fetch applications for this job
             const applications = await Application.find({ jobId })
@@ -125,33 +122,23 @@ export default class ApplicationController {
                     };
                 })
             );
-
-            console.log(JSON.stringify(applicationsWithTimesheets))
-
             res.render('applications', { job, applications: applicationsWithTimesheets, user: req.user });
         } catch (error) {
-            console.error(error);
-            res.status(500).send('Failed to submit application');
+            res.status(500).json({ success: false, message: 'Failed to submit application' });
         }
     }
 
 
     approveUser = async (req, res) => {
         try {
-            try {
-                const applicationId = req.params.applicationId;
+            const applicationId = req.params.applicationId;
 
-                // Update the application status to approved
-                const job = await Application.findByIdAndUpdate(applicationId, { approved: true });
-                auditLogs.add(req.user._id, `User Approve for Job: ${JSON.stringify(job)}`);
-                res.redirect(`/application/${job.jobId}/list`);
-            } catch (error) {
-                console.error(error);
-                res.status(500).send('Failed to approve application');
-            }
+            // Update the application status to approved
+            const job = await Application.findOneAndUpdate({ _id: applicationId }, { approved: true });
+            auditLogs.add(req.user._id, `User Approve for Job: ${JSON.stringify(job)}`);
+            res.redirect(`/application/${job.jobId}/list`);
         } catch (error) {
-            console.error(error);
-            res.status(500).send('Failed to submit application');
+            res.status(500).json({ success: false, message: 'Failed to submit application' });
         }
     }
 
@@ -160,7 +147,7 @@ export default class ApplicationController {
             const { applicationId, userId, jobId, rating } = req.body;
 
             // Fetch the user and update their rating
-            const user = await User.findById(userId);
+            const user = await User.findOne({ _id: userId });
             if (!user) {
                 return res.status(404).json({ success: false, message: 'User not found' });
             }
@@ -171,7 +158,7 @@ export default class ApplicationController {
 
             await user.save();
             auditLogs.add(userId, `User rating updated: ${JSON.stringify(user)}`);
-            await Application.findByIdAndUpdate(applicationId, { ratingSubmitted: true });
+            await Application.findOneAndUpdate({ _id: applicationId }, { ratingSubmitted: true });
             res.redirect(`/application/${jobId}/list`);
         } catch (error) {
             console.error(error);

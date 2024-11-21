@@ -15,7 +15,6 @@ export default class CovidController {
             const notifications = await Covid.find({ userId: req.user._id });
             return res.render('covid', { user: req.user, notifications: notifications });
         } catch (error) {
-            console.error(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
         }
     }
@@ -26,7 +25,7 @@ export default class CovidController {
             const userId = req.user._id;
 
             // Update user's COVID-positive date
-            await User.findByIdAndUpdate(userId, { covidPositiveDate: new Date(covidPositiveDate) });
+            await User.findOneAndUpdate({ _id: userId }, { covidPositiveDate: new Date(covidPositiveDate) });
         
             // Trigger timesheet check for the past 14 days
             // Calculate the date range
@@ -66,7 +65,6 @@ export default class CovidController {
             // await checkAndNotifyContacts(userId, new Date(covidPositiveDate));
             return res.json({ success: true });
         } catch (error) {
-            console.error(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
         }
     }

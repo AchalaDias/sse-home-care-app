@@ -101,7 +101,7 @@ export default class JobController {
 
     deleteJob = async (req, res) => {
         try {
-            const job = await Job.findById(req.params.id);
+            const job = await Job.findOne({ _id: req.params.id });
 
             // Check if job exists and user is the creator
             if (!job) {
@@ -190,7 +190,7 @@ export default class JobController {
             res.redirect(`/jobs/`); // Redirect back to the job details page
         } catch (error) {
             console.error(error);
-            res.status(500).send('Failed to submit application');
+            res.redirect(`/jobs/`)
         }
     }
 

@@ -8,7 +8,6 @@ export default class AuditController {
             const logs = await auditModel.find();
             return res.render('logs-admin', { user: req.user, logs, query: '' });
         } catch (error) {
-            console.error(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
         }
     }
@@ -19,7 +18,6 @@ export default class AuditController {
             const logs = await auditModel.search(query)
             return res.render('logs-admin', { user: req.user, logs, query });
         } catch (error) {
-            console.error(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
         }
     }
