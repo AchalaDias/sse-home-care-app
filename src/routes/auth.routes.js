@@ -18,8 +18,8 @@ AuthRouter.get('/register', checkNotAuthenticated, (req, res) => { return res.re
 AuthRouter.post('/register', checkNotAuthenticated, verifyCaptcha, authController.register);
 AuthRouter.get('/login', checkNotAuthenticated, (req, res) => { return res.render('login', { user: null }); })
 AuthRouter.get('/otp', (req, res) => { return res.render('otp', { userId: req.user._id, user: null, errorMsg: null }); })
-AuthRouter.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/',
+AuthRouter.post('/login', checkNotAuthenticated, verifyCaptcha, passport.authenticate('local', {
+    successRedirect: '/auth/otp',
     failureRedirect: '/auth/login',
     failureFlash: true
 }));
