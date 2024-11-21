@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">46.42% </span>
+                <span class="strong">46.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/28</span>
+                <span class='fraction'>14/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">50% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/26</span>
+                <span class='fraction'>14/28</span>
             </div>
         
             
@@ -134,7 +134,11 @@
 <a name='L69'></a><a href='#L69'>69</a>
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -180,27 +184,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -233,7 +241,7 @@ export default class CovidController {
 &nbsp;
             // Update user's COVID-positive date
             await User.findOneAndUpdate({ _id: userId }, { covidPositiveDate: new Date(covidPositiveDate) });
-        
+&nbsp;
             // Trigger timesheet check for the past 14 days
             // Calculate the date range
             const startDate = <span class="cstat-no" title="statement not covered" >new Date(covidPositiveDate);</span>
@@ -250,28 +258,32 @@ export default class CovidController {
                 .exec();
 &nbsp;
             // Extract unique userIds from the job
-            const userIds = <span class="cstat-no" title="statement not covered" >[...new Set(timesheets.map(<span class="fstat-no" title="function not covered" >(t</span>s) =&gt; <span class="cstat-no" title="statement not covered" >ts.jobId.userId)</span>)];</span>
+<span class="cstat-no" title="statement not covered" >            if (timesheets.length &gt; 0) {</span>
+                const userIds = <span class="cstat-no" title="statement not covered" >[...new Set(timesheets.map(<span class="fstat-no" title="function not covered" >(t</span>s) =&gt; <span class="cstat-no" title="statement not covered" >ts.jobId?.userId)</span>)];</span>
 &nbsp;
-            // Fetch user details (emails) from the User collection
-            const users = <span class="cstat-no" title="statement not covered" >await User.find({ _id: { $in: userIds } }).select('email name');</span>
+                // Fetch user details (emails) from the User collection
+                const users = <span class="cstat-no" title="statement not covered" >await User.find({ _id: { $in: userIds } }).select('email name');</span>
 &nbsp;
-            // Update covid alerts
-<span class="cstat-no" title="statement not covered" >            users.map(<span class="fstat-no" title="function not covered" >as</span>ync (user) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                if (user._id !== userId) {</span>
-                    const alert = <span class="cstat-no" title="statement not covered" >new Covid({</span>
-                        userId: user._id,
-                        message: COVID_MESSAGE
-                    });
-<span class="cstat-no" title="statement not covered" >                    await alert.save()</span>
-                }
-            });
+                // Update covid alerts
+<span class="cstat-no" title="statement not covered" >                users.map(<span class="fstat-no" title="function not covered" >as</span>ync (user) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    if (user._id !== userId) {</span>
+                        const alert = <span class="cstat-no" title="statement not covered" >new Covid({</span>
+                            userId: user._id,
+                            message: COVID_MESSAGE
+                        });
+<span class="cstat-no" title="statement not covered" >                        await alert.save()</span>
+                    }
+                });
 &nbsp;
-            // Send emails to the fetched users
-<span class="cstat-no" title="statement not covered" >            users.map(<span class="fstat-no" title="function not covered" >(u</span>ser) =&gt; <span class="cstat-no" title="statement not covered" >sendMail.sendCovidAlert(user.email))</span>;</span>
+                // Send emails to the fetched users
+<span class="cstat-no" title="statement not covered" >                users.map(<span class="fstat-no" title="function not covered" >(u</span>ser) =&gt; <span class="cstat-no" title="statement not covered" >sendMail.sendCovidAlert(user.email))</span>;</span>
+            }
+&nbsp;
 <span class="cstat-no" title="statement not covered" >            auditLogs.add(userId, "Covid sataus updated");</span>
             // await checkAndNotifyContacts(userId, new Date(covidPositiveDate));
 <span class="cstat-no" title="statement not covered" >            return res.json({ success: true });</span>
         } catch (error) {
+            console.log(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
         }
     }
@@ -283,7 +295,7 @@ export default class CovidController {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-11-21T04:38:43.946Z
+                at 2024-11-21T04:50:16.380Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

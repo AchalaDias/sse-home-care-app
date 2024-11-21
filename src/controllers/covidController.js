@@ -68,7 +68,6 @@ export default class CovidController {
             // await checkAndNotifyContacts(userId, new Date(covidPositiveDate));
             return res.json({ success: true });
         } catch (error) {
-            console.log(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
         }
     }
