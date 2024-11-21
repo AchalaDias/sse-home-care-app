@@ -26,7 +26,7 @@ export default class CovidController {
 
             // Update user's COVID-positive date
             await User.findOneAndUpdate({ _id: userId }, { covidPositiveDate: new Date(covidPositiveDate) });
-        
+
             // Trigger timesheet check for the past 14 days
             // Calculate the date range
             const startDate = new Date(covidPositiveDate);
@@ -43,28 +43,32 @@ export default class CovidController {
                 .exec();
 
             // Extract unique userIds from the job
-            const userIds = [...new Set(timesheets.map((ts) => ts.jobId.userId))];
+            if (timesheets.length > 0) {
+                const userIds = [...new Set(timesheets.map((ts) => ts.jobId?.userId))];
 
-            // Fetch user details (emails) from the User collection
-            const users = await User.find({ _id: { $in: userIds } }).select('email name');
+                // Fetch user details (emails) from the User collection
+                const users = await User.find({ _id: { $in: userIds } }).select('email name');
 
-            // Update covid alerts
-            users.map(async (user) => {
-                if (user._id !== userId) {
-                    const alert = new Covid({
-                        userId: user._id,
-                        message: COVID_MESSAGE
-                    });
-                    await alert.save()
-                }
-            });
+                // Update covid alerts
+                users.map(async (user) => {
+                    if (user._id !== userId) {
+                        const alert = new Covid({
+                            userId: user._id,
+                            message: COVID_MESSAGE
+                        });
+                        await alert.save()
+                    }
+                });
 
-            // Send emails to the fetched users
-            users.map((user) => sendMail.sendCovidAlert(user.email));
+                // Send emails to the fetched users
+                users.map((user) => sendMail.sendCovidAlert(user.email));
+            }
+
             auditLogs.add(userId, "Covid sataus updated");
             // await checkAndNotifyContacts(userId, new Date(covidPositiveDate));
             return res.json({ success: true });
         } catch (error) {
+            console.log(error);
             res.status(500).json({ success: false, message: "Clock-in failed" });
         }
     }
