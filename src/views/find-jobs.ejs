@@ -53,6 +53,9 @@
                                     <% if (job.userId != user._id.toString() && user.accountAccepted) { %>
                                         <a href="/job/<%= job._id %>" class="btn btn-primary">View Details</a>
                                     <% } %>
+                                    <% if (job.userId != user._id.toString() && !user.accountAccepted) { %>
+                                        <button href="/job/<%= job._id %>" class="btn btn-primary" disabled>Account Verification Required</button>
+                                    <% } %>
                                     
                                 </div>
                             </div>
