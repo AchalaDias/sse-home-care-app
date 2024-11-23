@@ -18,7 +18,6 @@ function initialize(passport) {
                     { email: email },
                     { otp: otp }
                 );
-                console.log(otp)
                 Mail.sendOtp(email, otp)
                 return done(null, user);
             }
