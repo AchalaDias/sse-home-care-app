@@ -17,7 +17,7 @@ const mailer = async () => {
 const sendMail = async (email, resetLink) => {
     const transporter = await mailer();
     const mailOptions = {
-        from: 'ssedemo14@gmail.com',
+        from: process.env.DEMO_EMAIL,
         to: email,
         subject: 'Password Reset Request',
         html: RESET_PASSWORD_TEMPLATE(resetLink),
@@ -37,7 +37,7 @@ const sendMail = async (email, resetLink) => {
 const sendOtp = async (email, otp) => {
     const transporter = await mailer();
     const mailOptions = {
-        from: 'ssedemo14@gmail.com',
+        from: process.env.DEMO_EMAIL,
         to: email,
         subject: 'OTP',
         html: OTP_EMAIL_TEMPLATE(otp),
@@ -57,7 +57,7 @@ const sendOtp = async (email, otp) => {
 const sendCovidAlert = async (email) => {
     const transporter = await mailer();
     const mailOptions = {
-        from: 'ssedemo14@gmail.com',
+        from: process.env.DEMO_EMAIL,
         to: email,
         subject: 'COVID Update',
         html: COVID_MESSAGE,
