@@ -46,7 +46,7 @@ export default class AuthController {
             }
             return res.render('home', { user, errMsg: null });
         } catch (error) {
-            console.log("************************", error);
+            console.log(error);
         }
     }
 
